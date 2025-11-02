@@ -1,0 +1,18 @@
+# Python
+venv/
+__pycache__/
+*.py[cod]
+
+# Django/SQLite
+db.sqlite3
+media/
+staticfiles/
+
+# Node (Tailwind build sources)
+theme/static_src/node_modules/
+
+# Logs/OS/Editor
+*.log
+.DS_Store
+Thumbs.db
+.vscode/

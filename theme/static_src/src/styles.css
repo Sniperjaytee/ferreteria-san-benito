@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.social-btn {
+  @apply size-12 p-2 flex justify-center items-center rounded-full hover:bg-purple-400 transition-colors hover:scale-110;
+}

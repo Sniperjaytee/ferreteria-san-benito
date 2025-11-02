@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Vistas de demo{% endblock %}
+
+{% block content %}
+<main class="container mx-auto px-4 py-10">
+  <h1 class="text-2xl font-bold text-primary mb-6">Navegador de vistas</h1>
+  <div class="bg-white rounded-lg shadow divide-y">
+    {% for title, name in links %}
+    <div class="p-4 flex items-center justify-between">
+      <span class="font-medium">{{ title }}</span>
+      <a class="px-3 py-1.5 rounded-full bg-secondary text-white" href="{% url name %}">Abrir</a>
+    </div>
+    {% endfor %}
+  </div>
+</main>
+{% endblock %}
+

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Registro{% endblock %}
+
+{% block content %}
+<main class="container mx-auto px-3 py-6 sm:px-4 sm:py-8">
+  <div class="max-w-md mx-auto bg-white rounded-lg shadow p-6">
+    <h1 class="text-xl font-semibold mb-4">Crear cuenta</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="mt-2 w-full px-4 py-2 rounded bg-primary text-white">Registrarme</button>
+    </form>
+  </div>
+</main>
+{% endblock %}
+

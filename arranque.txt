@@ -1,0 +1,99 @@
+Documentación del Proyecto: Ferretería San Benito
+Este documento describe la estructura del proyecto y los pasos necesarios para configurar y ejecutar el entorno de desarrollo local.
+1. Resumen del Proyecto
+Ferretería San Benito es una aplicación web de comercio electrónico desarrollada con Django para el backend y Tailwind CSS para el frontend. El proyecto permite a los usuarios navegar por un catálogo de productos, gestionar un carrito de compras y simular el proceso de pedido, mientras que los administradores pueden gestionar el inventario y los usuarios a través de un panel dedicado.
+2. Pila Tecnológica (Tech Stack)
+Backend: Python 3.x, Django 5.x
+Frontend: HTML5, Tailwind CSS, JavaScript
+Entorno de Desarrollo: Node.js, npm
+Base de Datos: SQLite (por defecto en desarrollo)
+3. Estructura del Proyecto
+El proyecto está organizado en una estructura modular para facilitar el mantenimiento y la escalabilidad:
+code
+Code
+ferreteria_sbenito/
+├── apps/                 # Contenedor para todas las aplicaciones de Django
+│   ├── core/             # App para la página principal y lógica base
+│   ├── catalogo/         # App para productos, categorías y búsqueda
+│   └── pedidos/          # App para carrito, pedidos y facturas
+│
+├── ferreteria_sbenito/   # Directorio de configuración principal del proyecto
+│   ├── settings.py       # Configuración global
+│   └── urls.py           # Enrutador principal de URLs
+│
+├── static/               # Archivos estáticos del usuario (imágenes, JS, etc.)
+│   └── img/
+│
+├── templates/            # Templates globales (base.html, 404.html, etc.)
+│   └── base.html
+│
+├── theme/                # App dedicada a la gestión de Tailwind CSS
+│   └── static_src/       # Código fuente del frontend
+│       ├── src/
+│       │   └── styles.css  # Archivo de entrada de Tailwind
+│       ├── package.json    # Dependencias de Node.js
+│       └── tailwind.config.js # Configuración de Tailwind CSS
+│
+└── manage.py             # Utilidad de línea de comandos de Django
+4. Guía de Instalación y Arranque
+Sigue estos pasos para levantar el entorno de desarrollo en tu máquina local.
+Python 3.x: Asegúrate de tener Python instalado. Verifícalo con python --version.
+Node.js y npm: Necesarios para compilar Tailwind CSS. Verifícalo con node -v y npm -v. Si no los tienes, descárgalos desde nodejs.org (versión LTS recomendada).
+Clonar el Repositorio (si aplica) o Abrir la Carpeta del Proyecto.
+Crear y Activar un Entorno Virtual:
+Abre una terminal en la raíz del proyecto.
+Ejecuta:
+code
+Bash
+# Crear el entorno (solo la primera vez)
+python -m venv venv
+
+# Activar el entorno (cada vez que empieces a trabajar)
+# En Windows:
+.\venv\Scripts\activate
+# En macOS/Linux:
+source venv/bin/activate
+Instalar Dependencias de Python:
+code
+Bash
+pip install -r requirements.txt
+(Nota: Crearemos un archivo requirements.txt en nuestro siguiente paso del workflow para que esto funcione).
+Instalar Dependencias de Node.js:
+Navega a la carpeta de configuración de Tailwind:
+code
+Bash
+cd theme\static_src
+Instala los paquetes de Node:
+code
+Bash
+npm install
+Regresa a la raíz del proyecto:
+code
+Bash
+cd ..\..
+Aplicar Migraciones de la Base de Datos:
+code
+Bash
+python manage.py migrate
+Crear un Superusuario (para acceder al Admin):
+code
+Bash
+python manage.py createsuperuser
+Sigue las instrucciones para crear tu cuenta de administrador.
+5. Cómo Levantar el Servidor de Desarrollo
+Para trabajar en el proyecto, necesitas tener dos terminales abiertas en la raíz del proyecto, ambas con el entorno virtual activado.
+Terminal 1: Compilador de Tailwind CSS
+Este proceso vigila tus archivos de frontend (.html, .js, styles.css) y recompila el CSS automáticamente cada vez que guardas un cambio.
+Ejecuta y deja corriendo:
+code
+Bash
+python manage.py tailwind start
+Terminal 2: Servidor de Django
+Este es el servidor principal de tu aplicación web.
+Ejecuta y deja corriendo:
+code
+Bash
+python manage.py runserver
+Una vez que ambos servidores estén corriendo, puedes acceder a la aplicación en tu navegador:
+Sitio Web: http://127.0.0.1:8000/
+Panel de Administrador: http://127.0.0.1:8000/admin/

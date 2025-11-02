@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Carrito{% endblock %}
+
+{% block content %}
+<main class="container mx-auto px-3 py-6 sm:px-4 sm:py-8">
+  <h1 class="text-2xl font-bold mb-4">Tu carrito</h1>
+  {% if items %}
+  <div class="bg-white rounded-lg shadow p-4">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="text-left">
+          <th class="p-2">Producto</th>
+          <th class="p-2">Precio</th>
+          <th class="p-2">Cantidad</th>
+          <th class="p-2">Subtotal</th>
+          <th class="p-2">Subtotal ({{ moneda_actual }})</th>
+          <th class="p-2"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for it in items %}
+        <tr class="border-t">
+          <td class="p-2">{{ it.producto.nombre }}</td>
+          <td class="p-2">{{ it.producto.precio_formateado }}</td>
+          <td class="p-2">
+            <form action="{% url 'pedidos:carrito_actualizar' %}" method="post" class="flex items-center gap-2">
+              {% csrf_token %}
+              <input type="hidden" name="product_id" value="{{ it.producto.id }}"/>
+              <input class="w-16 border rounded px-2 py-1" type="number" min="0" name="quantity" value="{{ it.cantidad }}"/>
+              <button class="px-3 py-1 rounded bg-gray-200">Actualizar</button>
+            </form>
+          </td>
+          <td class="p-2">${{ it.subtotal }}</td>
+          <td class="p-2">{{ simbolo_moneda }}{{ it.subtotal_convertido|floatformat:2 }}</td>
+          <td class="p-2">
+            <form action="{% url 'pedidos:carrito_eliminar' %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="product_id" value="{{ it.producto.id }}"/>
+              <button class="text-red-600 hover:underline">Eliminar</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+      <div class="flex justify-between items-center mt-4">
+      <form action="{% url 'pedidos:carrito_limpiar' %}" method="post">
+        {% csrf_token %}
+        <button class="text-sm text-gray-600 hover:underline">Vaciar carrito</button>
+      </form>
+      <div class="text-right">
+        <p class="text-lg">Total: <span class="font-bold">${{ total }}</span> <span class="text-steel ml-2">({{ simbolo_moneda }}{{ total_convertido|floatformat:2 }})</span></p>
+        <a href="{% url 'pedidos:checkout' %}" class="inline-block mt-2 px-4 py-2 rounded bg-primary text-white">Proceder al pago</a>
+      </div>
+    </div>
+  </div>
+  {% else %}
+    <p class="text-gray-600">Tu carrito está vacío.</p>
+  {% endif %}
+</main>
+{% endblock %}

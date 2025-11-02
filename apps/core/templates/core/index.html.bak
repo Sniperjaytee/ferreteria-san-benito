@@ -1,0 +1,253 @@
+<!-- apps/core/templates/core/index.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+
+<!-- Titulos y asi-->
+    <main class="container mx-auto px-3 py-6 flex-grow sm:px-4 sm:py-8">
+      <div class="text-center mb-8 sm:mb-12">
+        <h2 class="text-2xl sm:text-3xl font-bold text-primary mb-3 sm:mb-4">
+          Nuestros Productos Destacados
+        </h2>
+        <p class="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
+          Encuentra todo lo que necesitas para tus proyectos de construcción,
+          reparación y mejoras del hogar. Calidad garantizada y precios
+          competitivos.
+        </p>
+      </div>
+
+      <!-- Contenedor de Productos - 2 columnas en móvil -->
+      <div
+        class="grid grid-cols-2 gap-4 sm:gap-5 md:gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+      >
+        <!-- Producto 1 -->
+        <div
+          class="bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
+        >
+          <!-- Imagen del producto-->
+          <img
+            class="aspect-square object-cover"
+            src="{% static 'img/martillo.webp' %}"  
+            alt=""
+          />
+
+          <!-- Información del producto -->
+          <div class="p-3 sm:p-4">
+            <h3 class="font-bold text-sm sm:text-base mb-1 line-clamp-1">
+              Martillo de Acero
+            </h3>
+            <p class="text-gray-600 text-xs sm:text-sm mb-1 line-clamp-2">
+              Martillo profesional con mango de fibra de vidrio
+            </p>
+            <p class="text-primary font-bold text-base sm:text-lg mb-3">
+              $15.99
+            </p>
+
+            <!-- Controles de cantidad y carrito - AHORA MÁS GRANDES -->
+            <div class="flex items-center justify-between gap-1">
+              <!-- Controles de cantidad -->
+              <div
+                class="flex items-center border border-gray-300 rounded-full max-w-[120px]"
+              >
+                <button
+                  class="decrement-btn px-3 py-1.5 text-gray-600 hover:bg-gray-100 rounded-l-full text-sm"
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  min="1"
+                  value="1"
+                  class="quantity w-10 text-center border-none focus:outline-none focus:ring-1 focus:ring-primary text-sm"
+                />
+                <button
+                  class="increment-btn px-3 py-1.5 text-gray-600 hover:bg-gray-100 rounded-r-full text-sm"
+                >
+                  +
+                </button>
+              </div>
+
+              <!-- Botón Añadir - AHORA MÁS GRANDE -->
+              <button
+                class="add-to-cart-btn bg-primary hover:bg-primary-dark text-white px-3 py-1.5 rounded-full text-sm font-medium flex items-center transition"
+              >
+                <i class="fas fa-shopping-cart text-sm mr-1"></i>
+                <span class="hidden sm:inline">Añadir</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Producto 2 -->
+        <div
+          class="bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
+        >
+          <!-- Imagen del producto (se mantiene igual) -->
+          <img 
+          class="aspect-square object-cover" 
+          src="{% static 'img/pintura.webp' %}" 
+          alt="" />
+
+          <!-- Información del producto -->
+          <div class="p-3 sm:p-4">
+            <h3 class="font-bold text-sm sm:text-base mb-1 line-clamp-1">
+              Pintura Latex Interior Premium 4L
+            </h3>
+            <p class="text-gray-600 text-xs sm:text-sm mb-1 line-clamp-2">
+              Color: Blanco | Cubrimiento: 14 m²/L
+            </p>
+            <p class="text-primary font-bold text-base sm:text-lg mb-3">
+              $24.99
+            </p>
+
+            <!-- Controles de cantidad y carrito - AHORA MÁS GRANDES -->
+            <div class="flex items-center justify-between gap-1">
+              <!-- Controles de cantidad -->
+              <div
+                class="flex items-center border border-gray-300 rounded-full max-w-[120px]"
+              >
+                <button
+                  class="decrement-btn px-3 py-1.5 text-gray-600 hover:bg-gray-100 rounded-l-full text-sm"
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  min="1"
+                  value="1"
+                  class="quantity w-10 text-center border-none focus:outline-none focus:ring-1 focus:ring-primary text-sm"
+                />
+                <button
+                  class="increment-btn px-3 py-1.5 text-gray-600 hover:bg-gray-100 rounded-r-full text-sm"
+                >
+                  +
+                </button>
+              </div>
+
+              <!-- Botón Añadir - AHORA MÁS GRANDE -->
+              <button
+                class="add-to-cart-btn bg-primary hover:bg-primary-dark text-white px-3 py-1.5 rounded-full text-sm font-medium flex items-center transition"
+              >
+                <i class="fas fa-shopping-cart text-sm mr-1"></i>
+                <span class="hidden sm:inline">Añadir</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Producto 1 -->
+        <div
+          class="bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
+        >
+          <!-- Imagen del producto (se mantiene igual) -->
+          <img 
+          src="{% static 'img/taladro.webp' %}" 
+          alt="" />
+
+          <!-- Información del producto -->
+          <div class="p-3 sm:p-4">
+            <h3 class="font-bold text-sm sm:text-base mb-1 line-clamp-1">
+              Taladro Percutor Profesional 750W
+            </h3>
+            <p class="text-gray-600 text-xs sm:text-sm mb-1 line-clamp-2">
+              Marca: Herracor | Incluye maletín y accesorios
+            </p>
+            <p class="text-primary font-bold text-base sm:text-lg mb-3">
+              $89.99
+            </p>
+
+            <!-- Controles de cantidad y carrito - AHORA MÁS GRANDES -->
+            <div class="flex items-center justify-between gap-1">
+              <!-- Controles de cantidad -->
+              <div
+                class="flex items-center border border-gray-300 rounded-full max-w-[120px]"
+              >
+                <button
+                  class="decrement-btn px-3 py-1.5 text-gray-600 hover:bg-gray-100 rounded-l-full text-sm"
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  min="1"
+                  value="1"
+                  class="quantity w-10 text-center border-none focus:outline-none focus:ring-1 focus:ring-primary text-sm"
+                />
+                <button
+                  class="increment-btn px-3 py-1.5 text-gray-600 hover:bg-gray-100 rounded-r-full text-sm"
+                >
+                  +
+                </button>
+              </div>
+
+              <!-- Botón Añadir - AHORA MÁS GRANDE -->
+              <button
+                class="add-to-cart-btn bg-primary hover:bg-primary-dark text-white px-3 py-1.5 rounded-full text-sm font-medium flex items-center transition"
+              >
+                <i class="fas fa-shopping-cart text-sm mr-1"></i>
+                <span class="hidden sm:inline">Añadir</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Producto 3 -->
+        <div
+          class="bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
+        >
+          <!-- Imagen del producto (se mantiene igual) -->
+          <img 
+          class="aspect-square object-cover"
+          src="{% static 'img/llaves.webp' %}" 
+          alt="" />
+
+          <!-- Información del producto -->
+          <div class="p-3 sm:p-4">
+            <h3 class="font-bold text-sm sm:text-base mb-1 line-clamp-1">
+              Juego de Llaves de Precisión 14 Piezas
+            </h3>
+            <p class="text-gray-600 text-xs sm:text-sm mb-1 line-clamp-2">
+              Acero cromo vanadio | Garantía de por vida
+            </p>
+            <p class="text-primary font-bold text-base sm:text-lg mb-3">
+              $32.50
+            </p>
+
+            <!-- Controles de cantidad y carrito - AHORA MÁS GRANDES -->
+            <div class="flex items-center justify-between gap-1">
+              <!-- Controles de cantidad -->
+              <div
+                class="flex items-center border border-gray-300 rounded-full max-w-[120px]"
+              >
+                <button
+                  class="decrement-btn px-3 py-1.5 text-gray-600 hover:bg-gray-100 rounded-l-full text-sm"
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  min="1"
+                  value="1"
+                  class="quantity w-10 text-center border-none focus:outline-none focus:ring-1 focus:ring-primary text-sm"
+                />
+                <button
+                  class="increment-btn px-3 py-1.5 text-gray-600 hover:bg-gray-100 rounded-r-full text-sm"
+                >
+                  +
+                </button>
+              </div>
+
+              <!-- Botón Añadir - AHORA MÁS GRANDE -->
+              <button
+                class="add-to-cart-btn bg-primary hover:bg-primary-dark text-white px-3 py-1.5 rounded-full text-sm font-medium flex items-center transition"
+              >
+                <i class="fas fa-shopping-cart text-sm mr-1"></i>
+                <span class="hidden sm:inline">Añadir</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Repetir la misma estructura para los demás productos -->
+      </div>
+    </main>
+{% endblock content %}

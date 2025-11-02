@@ -1,0 +1,100 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Ferretería San Benito{% endblock %}</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    {% tailwind_css %}
+</head>
+<body class="bg-gray-50 relative min-h-screen flex flex-col">
+
+    <header class="bg-secondary shadow-sm sticky top-0 z-50">
+      <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row items-center py-3 gap-4">
+          <div class="hidden md:block flex-shrink-0">
+            <a href="{% url 'core:index' %}">
+              <h1 class="text-2xl font-bold text-primary">SAN BENITO</h1>
+            </a>
+          </div>
+          <div class="flex-grow w-full md:w-auto">
+            <form class="relative" action="{% url 'catalogo:productos_lista' %}" method="get">
+              <input type="text" name="q" placeholder="¿Qué buscas hoy?" class="w-full py-2 px-4 pr-10 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary" />
+              <button class="absolute right-3 top-2.5 text-gray-500">
+                <i class="fas fa-search"></i>
+              </button>
+            </form>
+          </div>
+          <div class="hidden md:flex items-center space-x-3">
+            <form action="{% url 'core:set_moneda' %}" method="get">
+              <select name="m" class="px-3 py-1.5 text-sm rounded-full border border-primary bg-white" onchange="this.form.submit()">
+                {% for m in monedas_disponibles %}
+                  <option value="{{ m }}" {% if m == moneda_actual %}selected{% endif %}>{{ m }}</option>
+                {% endfor %}
+              </select>
+            </form>
+            {% if user.is_authenticated %}
+              <a href="{% url 'logout' %}" class="leading-normal px-4 py-1.5 text-sm rounded-full border border-primary text-primary hover:bg-primary hover:text-white transition">Cerrar sesión</a>
+            {% else %}
+              <a href="{% url 'core:registro' %}" class="leading-normal px-4 py-1.5 text-sm rounded-full border border-primary text-primary hover:bg-primary hover:text-white transition">Registrarse</a>
+              <a href="{% url 'login' %}" class="leading-normal px-4 py-1.5 text-sm rounded-full bg-primary text-white hover:bg-opacity-90 transition">Iniciar sesión</a>
+            {% endif %}
+            <a href="{% url 'pedidos:carrito_ver' %}" class="relative p-2">
+              <i class="fas fa-shopping-cart text-xl text-gray-700"></i>
+              <span class="absolute -top-1 -right-1 bg-secondary text-primary text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">{{ cart_count|default:0 }}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container mx-auto px-4">
+      {% if messages %}
+        <div class="mt-3 space-y-2">
+          {% for message in messages %}
+            <div class="px-4 py-2 rounded bg-gray-100 text-sm">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <main class="flex-grow">
+        {% block content %}{% endblock content %}
+    </main>
+
+    <footer class="bg-gray-800 text-white py-10 mt-12">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="text-center md:text-left">
+            <h3 class="text-xl font-bold mb-4 text-secondary">SAN BENITO</h3>
+            <p class="mb-4">Ferretería y materiales de construcción de calidad</p>
+            <p class="text-gray-400">© 2025 Ferretería San Benito. Todos los derechos reservados.</p>
+          </div>
+          <div class="text-center">
+            <h3 class="text-lg font-semibold mb-4">Síguenos</h3>
+            <div class="flex justify-center space-x-4">
+              <a href="#" class="bg-gray-700 hover:bg-primary w-10 h-10 rounded-full flex items-center justify-center transition"><i class="fab fa-facebook-f"></i></a>
+              <a href="#" class="bg-gray-700 hover:bg-primary w-10 h-10 rounded-full flex items-center justify-center transition"><i class="fab fa-instagram"></i></a>
+              <a href="#" class="bg-gray-700 hover:bg-primary w-10 h-10 rounded-full flex items-center justify-center transition"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="bg-gray-700 hover:bg-primary w-10 h-10 rounded-full flex items-center justify-center transition"><i class="fab fa-youtube"></i></a>
+            </div>
+            <p class="mt-4 text-gray-400">¡Conéctate con nosotros!</p>
+          </div>
+          <div class="text-center md:text-right">
+            <h3 class="text-lg font-semibold mb-4">Información</h3>
+            <ul class="space-y-2 text-center md:text-right md:items-end flex flex-col items-center md:items-end">
+              <li><a href="{% url 'core:ubicacion' %}" class="text-gray-300 hover:text-white transition">Ubicación</a></li>
+              <li><a href="{% url 'core:preguntas' %}" class="text-gray-300 hover:text-white transition">Preguntas frecuentes</a></li>
+              <li><a href="{% url 'core:envios' %}" class="text-gray-300 hover:text-white transition">Envíos</a></li>
+              <li><a href="{% url 'core:contacto' %}" class="text-gray-300 hover:text-white transition">Contacto</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    {% block scripts %}{% endblock scripts %}
+</body>
+</html>

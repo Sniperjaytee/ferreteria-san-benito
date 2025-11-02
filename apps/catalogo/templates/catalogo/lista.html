@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Productos{% endblock %}
+
+{% block content %}
+<main class="container mx-auto px-3 py-6 sm:px-4 sm:py-8">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+    <h2 class="text-2xl sm:text-3xl font-bold text-primary">Productos</h2>
+    <form class="flex gap-2" action="{% url 'catalogo:productos_lista' %}" method="get">
+      <input type="text" name="q" value="{{ q }}" placeholder="Buscar..." class="py-2 px-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary" />
+      <button class="px-4 py-2 rounded-full bg-secondary text-white">Buscar</button>
+    </form>
+  </div>
+
+  <div class="flex gap-4">
+    <aside class="w-64 hidden md:block">
+      <div class="bg-white rounded-lg shadow p-4">
+        <h3 class="font-semibold mb-3">Categorías</h3>
+        <ul class="space-y-2">
+          <li><a class="text-sm hover:underline {% if not categoria_slug %}font-bold{% endif %}" href="{% url 'catalogo:productos_lista' %}">Todas</a></li>
+          {% for c in categorias %}
+          <li>
+            <a class="text-sm hover:underline {% if categoria_slug == c.slug %}font-bold{% endif %}" href="{% url 'catalogo:productos_por_categoria' slug=c.slug %}{% if q %}?q={{ q }}{% endif %}">{{ c.nombre }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </aside>
+
+    <section class="flex-1">
+      {% if page_obj.object_list %}
+      <div class="grid grid-cols-2 gap-4 sm:gap-5 md:gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {% for producto in page_obj %}
+          {% include 'catalogo/_product_card.html' %}
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-gray-600">No se encontraron productos.</p>
+      {% endif %}
+
+      {% if page_obj.paginator.num_pages > 1 %}
+      <div class="mt-6 flex justify-center gap-2">
+        {% if page_obj.has_previous %}
+          <a class="px-3 py-1 rounded bg-gray-200" href="?page={{ page_obj.previous_page_number }}&q={{ q }}&categoria={{ categoria_slug }}">Anterior</a>
+        {% endif %}
+        <span class="px-3 py-1">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+          <a class="px-3 py-1 rounded bg-gray-200" href="?page={{ page_obj.next_page_number }}&q={{ q }}&categoria={{ categoria_slug }}">Siguiente</a>
+        {% endif %}
+      </div>
+      {% endif %}
+    </section>
+  </div>
+</main>
+{% endblock %}
