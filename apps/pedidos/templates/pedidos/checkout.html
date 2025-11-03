@@ -3,51 +3,93 @@
 {% block title %}Checkout{% endblock %}
 
 {% block content %}
-<main class="container mx-auto px-3 py-6 sm:px-4 sm:py-8">
-  <h1 class="text-2xl font-bold mb-4">Checkout</h1>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <section class="md:col-span-2 bg-white rounded-lg shadow p-4">
-      <form method="post" enctype="multipart/form-data">
+<div class="container mx-auto px-4 py-10">
+  <h1 class="text-3xl font-semibold text-brand">Finaliza tu compra</h1>
+  <p class="mt-2 text-sm text-base-sub">Confirma tus datos de entrega y el método de pago para procesar el pedido.</p>
+
+  <div class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)]">
+    <section class="rounded-2xl border border-base-border bg-base-bg p-6 shadow-card">
+      <form method="post" enctype="multipart/form-data" class="space-y-5">
         {% csrf_token %}
-        <div class="mb-4">
-          <label class="block text-sm font-medium mb-1">Método de pago</label>
-          <select name="metodo_pago" class="w-full border rounded px-3 py-2">
-            <option value="efectivo">Efectivo</option>
-            <option value="transferencia">Transferencia Bancaria</option>
-            <option value="pago_movil">Pago Móvil</option>
-            <option value="zelle">Zelle</option>
-            <option value="paypal">PayPal</option>
-            <option value="binance">Binance Pay</option>
-            <option value="tarjeta">Tarjeta</option>
-          </select>
+        <div class="space-y-2">
+          <label for="direccion_entrega" class="text-sm font-medium text-base-fg">Dirección de entrega</label>
+          <textarea id="direccion_entrega" name="direccion_entrega" rows="3" required
+                    class="w-full rounded-xl border border-base-border bg-white px-4 py-3 text-sm text-base-fg focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/40">{{ direccion_entrega }}</textarea>
         </div>
-        <div class="mb-4">
-          <label class="block text-sm font-medium mb-1">Comprobante (opcional)</label>
-          <input type="file" name="comprobante_pago" class="w-full border rounded px-3 py-2"/>
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div class="space-y-2">
+            <label for="telefono_contacto" class="text-sm font-medium text-base-fg">Teléfono de contacto</label>
+            <input id="telefono_contacto" type="text" name="telefono_contacto" value="{{ telefono_contacto }}" required
+                   class="w-full rounded-xl border border-base-border bg-white px-4 py-3 text-sm text-base-fg focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/40" />
+          </div>
+          <div class="space-y-2">
+            <label for="metodo_pago" class="text-sm font-medium text-base-fg">Método de pago</label>
+            <select id="metodo_pago" name="metodo_pago"
+                    class="w-full rounded-xl border border-base-border bg-white px-4 py-3 text-sm text-base-fg focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/40">
+              <option value="efectivo">Efectivo</option>
+              <option value="transferencia">Transferencia bancaria</option>
+              <option value="pago_movil">Pago móvil</option>
+              <option value="zelle">Zelle</option>
+              <option value="paypal">PayPal</option>
+              <option value="binance">Binance Pay</option>
+              <option value="tarjeta">Tarjeta</option>
+            </select>
+          </div>
         </div>
-        <div class="mb-4">
-          <label class="block text-sm font-medium mb-1">Notas</label>
-          <textarea name="notas_pago" class="w-full border rounded px-3 py-2" rows="3" placeholder="Detalles del pago"></textarea>
+        <div class="space-y-2">
+          <label for="comprobante_pago" class="text-sm font-medium text-base-fg">Comprobante (opcional)</label>
+          <input id="comprobante_pago" type="file" name="comprobante_pago"
+                 class="w-full rounded-xl border border-dashed border-base-border bg-white px-4 py-3 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/40" />
         </div>
-        <button class="px-4 py-2 rounded bg-primary text-white">Confirmar pedido</button>
+        <div class="space-y-2">
+          <label for="notas_pago" class="text-sm font-medium text-base-fg">Notas</label>
+          <textarea id="notas_pago" name="notas_pago" rows="3" placeholder="Detalles adicionales del pago"
+                    class="w-full rounded-xl border border-base-border bg-white px-4 py-3 text-sm text-base-fg focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/40"></textarea>
+        </div>
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p class="text-xs text-base-sub">Al confirmar aceptas nuestros términos y políticas de envío.</p>
+          <button type="submit"
+                  class="inline-flex items-center justify-center rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow transition hover:bg-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/70">
+            Confirmar pedido
+          </button>
+        </div>
       </form>
     </section>
-    <aside class="bg-white rounded-lg shadow p-4">
-      <h2 class="font-semibold mb-3">Resumen</h2>
-      <ul class="space-y-2 text-sm">
+
+    <aside class="space-y-4 rounded-2xl border border-base-border bg-base-bg p-6 shadow-card">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-base-fg">Resumen</h2>
+        <i class="fas fa-box text-brand"></i>
+      </div>
+      <ul class="space-y-3 text-sm text-base-sub">
         {% for it in items %}
-        <li class="flex justify-between">
-          <span>{{ it.producto.nombre }} x{{ it.cantidad }}</span>
-          <span>${{ it.subtotal }}</span>
+        <li class="flex items-start justify-between gap-4">
+          <span class="flex-1">{{ it.producto.nombre }} × {{ it.cantidad }}</span>
+          <span class="font-medium text-base-fg">${{ it.subtotal }}</span>
         </li>
         {% endfor %}
       </ul>
-      <div class="border-t mt-3 pt-3 flex justify-between font-bold">
-        <span>Total</span>
-        <span>${{ total }}</span>
+      <div class="border-t border-base-border pt-4 text-base-fg">
+        <div class="flex justify-between font-semibold">
+          <span>Total</span>
+          <span>${{ total }}</span>
+        </div>
+      </div>
+      <div class="space-y-3 border-t border-base-border pt-4 text-xs text-base-sub">
+        <div class="flex items-center gap-3">
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand/10 text-brand">
+            <i class="fas fa-truck"></i>
+          </span>
+          <p>Envíos a todo el país en 48 horas hábiles.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand/10 text-brand">
+            <i class="fas fa-phone"></i>
+          </span>
+          <p>Soporte y confirmación de pago por WhatsApp.</p>
+        </div>
       </div>
     </aside>
   </div>
-</main>
+</div>
 {% endblock %}
-

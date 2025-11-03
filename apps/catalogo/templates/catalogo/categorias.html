@@ -1,0 +1,40 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Categorías{% endblock %}
+
+{% block content %}
+<div class='container mx-auto px-4 py-10 space-y-8'>
+  <section class='text-center space-y-3'>
+    <h1 class='text-3xl font-semibold text-brand'>Explora nuestras categorías</h1>
+    <p class='max-w-2xl mx-auto text-base-sub'>Selecciona una categoría para ver los productos relacionados. Todas las imágenes provienen de la base de datos; si no hay imagen cargada mostraremos un marcador.</p>
+  </section>
+
+  <section class='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+    {% for categoria in categorias %}
+    <article class='rounded-2xl border border-base-border bg-white shadow-card transition hover:-translate-y-1 hover:shadow-md'>
+      <a href="{% url 'catalogo:productos_por_categoria' slug=categoria.slug %}" class='block'>
+        {% if categoria.imagen %}
+          <img src='{{ categoria.imagen.url }}' alt='{{ categoria.nombre }}' loading='lazy' class='h-48 w-full rounded-t-2xl object-cover' />
+        {% else %}
+          <div class='h-48 w-full rounded-t-2xl bg-base-surface flex items-center justify-center text-base-sub'>
+            <i class='fas fa-image text-2xl'></i>
+          </div>
+        {% endif %}
+        <div class='p-5 space-y-2 text-left'>
+          <h2 class='text-lg font-semibold text-base-fg'>{{ categoria.nombre }}</h2>
+          {% if categoria.descripcion %}
+            <p class='text-sm text-base-sub line-clamp-3'>{{ categoria.descripcion }}</p>
+          {% else %}
+            <p class='text-sm text-base-sub'>Explora productos de {{ categoria.nombre }}.</p>
+          {% endif %}
+          <span class='inline-flex items-center gap-2 text-sm font-medium text-brand'>Ver productos <i class='fas fa-arrow-right'></i></span>
+        </div>
+      </a>
+    </article>
+    {% empty %}
+    <p class='col-span-full text-center text-base-sub'>No hay categorías disponibles.</p>
+    {% endfor %}
+  </section>
+</div>
+{% endblock %}

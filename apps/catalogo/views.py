@@ -41,3 +41,9 @@ def producto_detalle(request, slug):
         'producto': producto,
         'relacionados': relacionados,
     })
+
+def categorias(request):
+    categorias = Categoria.objects.filter(activa=True).order_by('orden')
+    return render(request, 'catalogo/categorias.html', {
+        'categorias': categorias,
+    })

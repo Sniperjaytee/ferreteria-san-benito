@@ -4,53 +4,74 @@
 {% block title %}Productos{% endblock %}
 
 {% block content %}
-<main class="container mx-auto px-3 py-6 sm:px-4 sm:py-8">
-  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-    <h2 class="text-2xl sm:text-3xl font-bold text-primary">Productos</h2>
-    <form class="flex gap-2" action="{% url 'catalogo:productos_lista' %}" method="get">
-      <input type="text" name="q" value="{{ q }}" placeholder="Buscar..." class="py-2 px-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary" />
-      <button class="px-4 py-2 rounded-full bg-secondary text-white">Buscar</button>
-    </form>
+<div class="container mx-auto px-4 py-10">
+  <div class="mb-8 rounded-2xl border border-base-border bg-base-bg p-6 shadow-card">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <h1 class="text-2xl font-semibold text-brand sm:text-3xl">Productos</h1>
+      <form action="{% url 'catalogo:productos_lista' %}" method="get" class="flex w-full gap-3 sm:w-auto">
+        <input type="search" name="q" value="{{ q }}" placeholder="Buscar productos"
+               class="w-full rounded-full border border-base-border bg-white px-4 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/40 sm:w-72" />
+        <button type="submit"
+                class="inline-flex items-center justify-center rounded-full bg-brand px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/70">
+          Buscar
+        </button>
+      </form>
+    </div>
   </div>
 
-  <div class="flex gap-4">
-    <aside class="w-64 hidden md:block">
-      <div class="bg-white rounded-lg shadow p-4">
-        <h3 class="font-semibold mb-3">Categorías</h3>
-        <ul class="space-y-2">
-          <li><a class="text-sm hover:underline {% if not categoria_slug %}font-bold{% endif %}" href="{% url 'catalogo:productos_lista' %}">Todas</a></li>
+  <div class="flex gap-6">
+    <aside class="hidden w-72 md:block">
+      <div class="space-y-4 rounded-2xl border border-base-border bg-base-bg p-6 shadow-card">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold text-base-fg">Categorías</h2>
+          <i class="fas fa-list text-base-sub"></i>
+        </div>
+        <ul class="space-y-2 text-sm">
+          <li>
+            <a href="{% url 'catalogo:productos_lista' %}"
+               class="block rounded-lg px-3 py-2 transition hover:bg-brand/10 hover:text-brand {% if not categoria_slug %}bg-brand/10 font-semibold text-brand{% else %}text-base-sub{% endif %}">
+              Todas
+            </a>
+          </li>
           {% for c in categorias %}
           <li>
-            <a class="text-sm hover:underline {% if categoria_slug == c.slug %}font-bold{% endif %}" href="{% url 'catalogo:productos_por_categoria' slug=c.slug %}{% if q %}?q={{ q }}{% endif %}">{{ c.nombre }}</a>
+            <a href="{% url 'catalogo:productos_por_categoria' slug=c.slug %}{% if q %}?q={{ q }}{% endif %}"
+               class="block rounded-lg px-3 py-2 transition {% if categoria_slug == c.slug %}bg-brand/10 font-semibold text-brand{% else %}text-base-sub hover:bg-brand/10 hover:text-brand{% endif %}">
+              {{ c.nombre }}
+            </a>
           </li>
           {% endfor %}
         </ul>
       </div>
     </aside>
 
-    <section class="flex-1">
+    <section class="flex-1 space-y-6">
       {% if page_obj.object_list %}
-      <div class="grid grid-cols-2 gap-4 sm:gap-5 md:gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {% for producto in page_obj %}
-          {% include 'catalogo/_product_card.html' %}
-        {% endfor %}
-      </div>
+        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {% for producto in page_obj %}
+            {% include 'catalogo/_product_card.html' %}
+          {% endfor %}
+        </div>
       {% else %}
-      <p class="text-gray-600">No se encontraron productos.</p>
+        <div class="rounded-2xl border border-base-border bg-white p-8 text-center text-base-sub shadow-sm">
+          No se encontraron productos.
+        </div>
       {% endif %}
 
       {% if page_obj.paginator.num_pages > 1 %}
-      <div class="mt-6 flex justify-center gap-2">
-        {% if page_obj.has_previous %}
-          <a class="px-3 py-1 rounded bg-gray-200" href="?page={{ page_obj.previous_page_number }}&q={{ q }}&categoria={{ categoria_slug }}">Anterior</a>
-        {% endif %}
-        <span class="px-3 py-1">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
-        {% if page_obj.has_next %}
-          <a class="px-3 py-1 rounded bg-gray-200" href="?page={{ page_obj.next_page_number }}&q={{ q }}&categoria={{ categoria_slug }}">Siguiente</a>
-        {% endif %}
-      </div>
+        <nav class="flex items-center justify-center gap-2 text-sm">
+          {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}&q={{ q }}&categoria={{ categoria_slug }}"
+               class="rounded-full border border-base-border px-3 py-1.5 hover:border-brand hover:text-brand">Anterior</a>
+          {% endif %}
+          <span class="rounded-full border border-base-border px-3 py-1.5 text-base-sub">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&q={{ q }}&categoria={{ categoria_slug }}"
+               class="rounded-full border border-base-border px-3 py-1.5 hover:border-brand hover:text-brand">Siguiente</a>
+          {% endif %}
+        </nav>
       {% endif %}
     </section>
   </div>
-</main>
+</div>
 {% endblock %}

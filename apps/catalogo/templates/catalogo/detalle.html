@@ -4,48 +4,94 @@
 {% block title %}{{ producto.nombre }}{% endblock %}
 
 {% block content %}
-<main class="container mx-auto px-3 py-6 sm:px-4 sm:py-8">
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-    <div>
-      {% if producto.imagen %}
-        <img class="w-full rounded-lg" src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}"/>
-      {% else %}
-        <img class="w-full rounded-lg" src="{% static 'img/madera.jpg' %}" alt="{{ producto.nombre }}"/>
-      {% endif %}
-    </div>
-    <div>
-      <h1 class="text-2xl font-bold mb-2">{{ producto.nombre }}</h1>
-      <p class="text-gray-600 mb-4">{{ producto.descripcion }}</p>
-      {% with m=moneda_actual %}
-        {% if m and m != producto.moneda_precio %}
-          {% precio_en_moneda producto m as precio_convertido %}
-          <p class="text-primary text-3xl font-extrabold mb-1">{{ simbolo_moneda }}{{ precio_convertido|floatformat:2 }}</p>
-          <p class="text-steel text-sm mb-6">({{ producto.precio_formateado }})</p>
+<div class="container mx-auto px-4 py-10">
+  <div class="grid gap-8 lg:grid-cols-[1.1fr_minmax(0,0.9fr)]">
+    <div class="rounded-2xl border border-base-border bg-base-bg p-6 shadow-card">
+      <div class="flex aspect-square items-center justify-center rounded-2xl border-2 border-dashed border-base-border bg-white">
+        {% if producto.imagen %}
+          <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}"
+               loading="lazy" class="h-full w-full object-contain" />
         {% else %}
-          <p class="text-primary text-3xl font-extrabold mb-6">{{ producto.precio_formateado }}</p>
+          <img src="{% static 'img/madera.jpg' %}" alt="{{ producto.nombre }}"
+               loading="lazy" class="h-full w-full object-contain" />
         {% endif %}
-      {% endwith %}
-      <form action="{% url 'pedidos:carrito_agregar' %}" method="post" class="flex items-center gap-3">
+      </div>
+    </div>
+
+    <aside class="space-y-6 rounded-2xl border border-base-border bg-base-bg p-6 shadow-card lg:sticky lg:top-24">
+      <div class="space-y-2">
+        <span class="inline-flex items-center gap-2 rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand">
+          <i class="fas fa-star"></i> Producto destacado
+        </span>
+        <h1 class="text-3xl font-semibold text-base-fg">{{ producto.nombre }}</h1>
+        <p class="text-sm text-base-sub">{{ producto.descripcion }}</p>
+      </div>
+
+      <div class="space-y-1">
+        {% with m=moneda_actual %}
+          {% if m and m != producto.moneda_precio %}
+            {% precio_en_moneda producto m as precio_convertido %}
+            <p class="text-3xl font-semibold text-brand">{{ simbolo_moneda }}{{ precio_convertido|floatformat:2 }}</p>
+            <p class="text-sm text-base-sub">({{ producto.precio_formateado }})</p>
+          {% else %}
+            <p class="text-3xl font-semibold text-brand">{{ producto.precio_formateado }}</p>
+          {% endif %}
+        {% endwith %}
+      </div>
+
+      <form action="{% url 'pedidos:carrito_agregar' %}" method="post" class="flex flex-col gap-3 sm:flex-row sm:items-center">
         {% csrf_token %}
         <input type="hidden" name="product_id" value="{{ producto.id }}" />
-        <input name="quantity" type="number" min="1" value="1" class="w-16 text-center border border-gray-300 rounded" />
-        <button class="bg-primary hover:bg-black/80 text-white px-4 py-2 rounded-full">Añadir al carrito</button>
+        <div class="inline-flex items-center rounded-full border border-base-border">
+          <button type="button" class="px-4 py-2 text-base-sub hover:text-brand"
+                  onclick="var q=this.nextElementSibling; if(+q.value>1){q.value=+q.value-1;}">−</button>
+          <input type="number" name="quantity" min="1" value="1"
+                 class="h-10 w-14 border-0 text-center text-sm text-base-fg focus:outline-none focus:ring-0" />
+          <button type="button" class="px-4 py-2 text-base-sub hover:text-brand"
+                  onclick="var q=this.previousElementSibling; q.value=+q.value+1;">+</button>
+        </div>
+        <button type="submit"
+                class="inline-flex flex-1 items-center justify-center rounded-xl bg-accent px-5 py-3 text-base font-semibold text-slate-900 shadow transition hover:bg-accent-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300">
+          Añadir al carrito
+        </button>
       </form>
+
       {% if not producto.disponible %}
-      <p class="text-red-600 mt-3">No disponible actualmente.</p>
+        <p class="text-sm font-medium text-danger">No disponible actualmente.</p>
       {% endif %}
-    </div>
+
+      <div class="space-y-4 border-t border-base-border pt-4 text-sm text-base-sub">
+        <div class="flex items-start gap-3">
+          <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-brand/10 text-brand">
+            <i class="fas fa-shield-alt"></i>
+          </span>
+          <div>
+            <h4 class="font-semibold text-base-fg">Compra segura</h4>
+            <p>Tu información está protegida con cifrado SSL y validación manual.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-brand/10 text-brand">
+            <i class="fas fa-undo"></i>
+          </span>
+          <div>
+            <h4 class="font-semibold text-base-fg">Devoluciones fáciles</h4>
+            <p>30 días para cambios o devoluciones con comprobante de compra.</p>
+          </div>
+        </div>
+      </div>
+    </aside>
   </div>
 
   {% if relacionados %}
-  <section class="mt-12">
-    <h2 class="text-xl font-semibold mb-4">También te puede interesar</h2>
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+  <section class="mt-12 space-y-4">
+    <h2 class="text-xl font-semibold text-base-fg">También te puede interesar</h2>
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
       {% for producto in relacionados %}
         {% include 'catalogo/_product_card.html' %}
       {% endfor %}
     </div>
   </section>
   {% endif %}
-</main>
+</div>
 {% endblock %}

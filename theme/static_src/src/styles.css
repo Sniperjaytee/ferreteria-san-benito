@@ -5,3 +5,12 @@
 .social-btn {
   @apply size-12 p-2 flex justify-center items-center rounded-full hover:bg-purple-400 transition-colors hover:scale-110;
 }
+
+@layer base {
+  body {
+    @apply bg-base-surface text-base-fg antialiased;
+  }
+  a {
+    @apply transition-colors;
+  }
+}

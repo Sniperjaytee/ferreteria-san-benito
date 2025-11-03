@@ -1,0 +1,60 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Landing (Estilo Kiuzzu){% endblock %}
+
+{% block content %}
+<main class="container mx-auto px-3 py-6 sm:px-4 sm:py-8">
+  <!-- Hero con espacio para banner principal -->
+  <section class="mb-10">
+    <div class="rounded-2xl overflow-hidden bg-light border border-gray-200">
+      <div class="w-full h-40 sm:h-56 md:h-64 bg-gray-200 flex items-center justify-center text-steel">
+        <i class="fas fa-image mr-2"></i> Área de banner principal (agrega tu imagen)
+      </div>
+    </div>
+  </section>
+
+  <!-- Cuadrícula de categorías con íconos (espacios de imagen) -->
+  <section class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+    {% for title, desc in (
+      ('Ferretería General','Herramientas y suministros esenciales.'),
+      ('Construcción','Materiales y accesorios de obra.'),
+      ('Equipamiento','Maquinaria y equipos profesionales.'),
+      ('Herramientas','Manual, eléctrica y de medición.')
+    ) %}
+    <div class="bg-white rounded-xl shadow p-5 border border-gray-100">
+      <div class="w-full h-24 bg-gray-200 rounded-lg mb-3 flex items-center justify-center text-steel">
+        <i class="fas fa-image mr-2"></i> Imagen de categoría
+      </div>
+      <h3 class="font-semibold text-dark mb-1">{{ title }}</h3>
+      <p class="text-steel text-sm">{{ desc }}</p>
+    </div>
+    {% endfor %}
+  </section>
+
+  <!-- Productos destacados -->
+  <section>
+    <h2 class="text-2xl font-bold text-primary mb-1">Nuestros Productos Destacados</h2>
+    <p class="text-steel mb-6">Encuentra todo lo que necesitas para tus proyectos de construcción, reparación y mejoras del hogar. Calidad garantizada y precios competitivos.</p>
+    <div class="grid grid-cols-2 gap-4 sm:gap-5 md:gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {% for producto in productos_destacados %}
+        {% include 'catalogo/_product_card.html' %}
+      {% empty %}
+        <p class="text-steel">Carga algunos productos destacados en el admin para verlos aquí.</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Faja de marcas/aliados (solo espacios para logo) -->
+  <section class="mt-12">
+    <div class="bg-white rounded-xl border border-gray-200 p-4">
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+        {% for _ in '123456' %}
+          <div class="h-12 bg-gray-200 rounded flex items-center justify-center text-steel"><i class="fas fa-image mr-2"></i> Logo</div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}
+

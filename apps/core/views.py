@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login as auth_login
 from catalogo.models import Producto, Categoria
+from core.models import ConfiguracionMoneda
 
 
 def index(request):
@@ -24,6 +25,11 @@ def registro(request):
     else:
         form = UserCreationForm()
     return render(request, 'core/registro.html', {'form': form})
+
+
+def landing(request):
+    """Landing para comparar el look de kiuzzu dentro de Django."""
+    return render(request, 'core/landing.html')
 
 
 def ubicacion(request):
@@ -60,9 +66,13 @@ def vistas(request):
 
 def set_moneda(request):
     """Cambia la moneda activa para mostrar precios en el sitio."""
-    config = ConfiguracionMoneda.obtener_configuracion()
+    # Importación y obtención segura de configuración
+    try:
+        config = ConfiguracionMoneda.obtener_configuracion()
+    except Exception:
+        config = None
     moneda = request.GET.get('m') or request.POST.get('m')
-    if moneda and moneda in (config.monedas_mostrar or [config.moneda_principal]):
+    if config and moneda and moneda in (config.monedas_mostrar or [config.moneda_principal]):
         request.session['moneda'] = moneda
         request.session.modified = True
     return redirect(request.META.get('HTTP_REFERER', 'core:index'))

@@ -1,11 +1,13 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST
-from django.contrib import messages
 from decimal import Decimal
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
+
 from catalogo.models import Producto
-from .models import Pedido, ItemPedido
-from core.models import ConfiguracionMoneda, TasaCambio
+from core.models import ConfiguracionMoneda
+from .models import ItemPedido, Pedido
 
 
 def _get_cart(session):
@@ -22,6 +24,7 @@ def carrito_ver(request):
     total = Decimal('0.00')
     config = ConfiguracionMoneda.obtener_configuracion()
     moneda_actual = request.session.get('moneda', config.moneda_principal)
+
     if cart:
         ids = [int(pid) for pid in cart.keys()]
         productos = {p.id: p for p in Producto.objects.filter(id__in=ids)}
@@ -33,7 +36,6 @@ def carrito_ver(request):
             qty = int(qty)
             subtotal = producto.precio * qty
             total += subtotal
-            # precio convertido para mostrar
             precio_convertido = producto.obtener_precio_en_moneda(moneda_actual)
             items.append({
                 'producto': producto,
@@ -42,6 +44,7 @@ def carrito_ver(request):
                 'precio_convertido': precio_convertido,
                 'subtotal_convertido': precio_convertido * qty,
             })
+
     total_convertido = sum([i['subtotal_convertido'] for i in items]) if items else Decimal('0.00')
     return render(request, 'pedidos/carrito.html', {
         'items': items,
@@ -64,12 +67,14 @@ def carrito_agregar(request):
     cart = _get_cart(request.session)
     current = int(cart.get(str(product_id), 0))
     nuevo_total = current + quantity
+
     # Validar stock
     if producto.stock is not None and nuevo_total > producto.stock:
         cart[str(product_id)] = producto.stock
         request.session.modified = True
         messages.warning(request, f'Solo hay {producto.stock} unidades disponibles de {producto.nombre}.')
         return redirect(request.META.get('HTTP_REFERER', 'pedidos:carrito_ver'))
+
     cart[str(product_id)] = nuevo_total
     request.session.modified = True
     messages.success(request, f'Se añadió {producto.nombre} al carrito.')
@@ -114,7 +119,7 @@ def checkout(request):
         messages.info(request, 'Tu carrito está vacío.')
         return redirect('catalogo:productos_lista')
 
-    # Recalcular total y validar productos
+    # Recalcular items y total
     items = []
     total = Decimal('0.00')
     ids = [int(pid) for pid in cart.keys()]
@@ -130,19 +135,32 @@ def checkout(request):
         items.append({'producto': producto, 'cantidad': qty, 'subtotal': subtotal})
 
     if request.method == 'POST':
+        direccion = request.POST.get('direccion_entrega', '').strip()
+        telefono = request.POST.get('telefono_contacto', '').strip()
         metodo_pago = request.POST.get('metodo_pago', 'efectivo')
         notas_pago = request.POST.get('notas_pago', '')
         comprobante = request.FILES.get('comprobante_pago')
+
+        if not direccion or not telefono:
+            messages.error(request, 'Dirección de entrega y teléfono son obligatorios.')
+            return render(request, 'pedidos/checkout.html', {
+                'items': items,
+                'total': total,
+                'direccion_entrega': direccion,
+                'telefono_contacto': telefono,
+            })
 
         pedido = Pedido.objects.create(
             usuario=request.user,
             total=total,
             metodo_pago=metodo_pago,
             notas_pago=notas_pago,
+            direccion_entrega=direccion,
+            telefono_contacto=telefono,
         )
         if comprobante:
             pedido.comprobante_pago = comprobante
-            pedido.save()
+            pedido.save(update_fields=['comprobante_pago'])
 
         for it in items:
             producto = it['producto']
@@ -159,7 +177,6 @@ def checkout(request):
             except Exception:
                 pass
 
-        # Vaciar carrito y redirigir a confirmación
         request.session['cart'] = {}
         request.session.modified = True
         return redirect('pedidos:pedido_confirmacion', numero_pedido=pedido.numero_pedido)
@@ -174,3 +191,4 @@ def checkout(request):
 def pedido_confirmacion(request, numero_pedido):
     pedido = get_object_or_404(Pedido, numero_pedido=numero_pedido, usuario=request.user)
     return render(request, 'pedidos/confirmacion.html', {'pedido': pedido})
+

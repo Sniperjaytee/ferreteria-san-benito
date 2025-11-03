@@ -1,42 +1,58 @@
-{% load static precios %}
-<div class="bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
-  <a href="{% url 'catalogo:producto_detalle' slug=producto.slug %}">
-    {% if producto.imagen %}
-      <img class="aspect-square object-cover w-full" src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" />
-    {% else %}
-      <img class="aspect-square object-cover w-full" src="{% static 'img/madera.jpg' %}" alt="{{ producto.nombre }}" />
-    {% endif %}
+﻿{% load static precios %}
+<article class='group rounded-2xl border border-base-border bg-base-surface shadow-card transition hover:-translate-y-1 hover:shadow-md'>
+  <a href="{% url 'catalogo:producto_detalle' slug=producto.slug %}" class='block p-3'>
+    <div class='rounded-2xl border-2 border-dashed border-base-border bg-white'>
+      {% if producto.imagen %}
+        <img src='{{ producto.imagen.url }}' alt='{{ producto.nombre }}'
+             loading='lazy' class='aspect-square w-full object-cover' />
+      {% else %}
+        <div class='flex aspect-square items-center justify-center text-base-sub'>
+          <i class='fas fa-image text-2xl'></i>
+        </div>
+      {% endif %}
+    </div>
   </a>
-  <div class="p-3 sm:p-4">
-    <a href="{% url 'catalogo:producto_detalle' slug=producto.slug %}"><h3 class="font-bold text-sm sm:text-base mb-1 line-clamp-1">{{ producto.nombre }}</h3></a>
-    <p class="text-gray-600 text-xs sm:text-sm mb-2 line-clamp-2">{{ producto.descripcion|truncatechars:80 }}</p>
+
+  <div class='space-y-3 px-4 pb-5'>
+    <h3 class='line-clamp-2 text-sm font-semibold text-base-fg transition group-hover:text-brand'>
+      <a href="{% url 'catalogo:producto_detalle' slug=producto.slug %}">{{ producto.nombre }}</a>
+    </h3>
+    <p class='line-clamp-2 text-xs text-base-sub'>{{ producto.descripcion|truncatechars:90 }}</p>
 
     {% with m=moneda_actual %}
       {% if m and m != producto.moneda_precio %}
         {% precio_en_moneda producto m as precio_convertido %}
-        <p class="text-primary font-bold text-base sm:text-lg">{{ simbolo_moneda }}{{ precio_convertido|floatformat:2 }}</p>
-        <p class="text-gray-500 text-xs">({{ producto.precio_formateado }})</p>
+        <div class='flex items-baseline gap-2'>
+          <span class='text-lg font-semibold text-brand'>{{ simbolo_moneda }}{{ precio_convertido|floatformat:2 }}</span>
+          <span class='text-xs text-base-sub'>({{ producto.precio_formateado }})</span>
+        </div>
       {% else %}
-        <p class="text-primary font-bold text-base sm:text-lg">{{ producto.precio_formateado }}</p>
+        <span class='text-lg font-semibold text-brand'>{{ producto.precio_formateado }}</span>
       {% endif %}
     {% endwith %}
 
     {% if producto.stock_bajo %}
-      <p class="text-xs text-red-600 mt-1">Stock bajo</p>
+      <p class='text-xs font-medium text-danger'>Stock bajo</p>
     {% endif %}
 
-    <form action="{% url 'pedidos:carrito_agregar' %}" method="post" class="mt-3 flex items-center justify-between gap-1">
+    <form action="{% url 'pedidos:carrito_agregar' %}" method='post' class='flex items-center justify-between gap-2'>
       {% csrf_token %}
-      <input type="hidden" name="product_id" value="{{ producto.id }}" />
-      <div class="flex items-center border border-gray-300 rounded-full max-w-[120px]">
-        <button type="button" class="px-3 py-1.5 text-gray-600 hover:bg-gray-100 rounded-l-full text-sm" onclick="var q=this.nextElementSibling; if(+q.value>1) q.value=+q.value-1;">-</button>
-        <input name="quantity" type="number" min="1" value="1" class="w-10 text-center border-none focus:outline-none focus:ring-1 focus:ring-primary text-sm" />
-        <button type="button" class="px-3 py-1.5 text-gray-600 hover:bg-gray-100 rounded-r-full text-sm" onclick="var q=this.previousElementSibling; q.value=+q.value+1;">+</button>
+      <input type='hidden' name='product_id' value='{{ producto.id }}' />
+      <div class='inline-flex items-center rounded-full border border-base-border'>
+        <button type='button'
+                class='px-3 py-1 text-base-sub hover:text-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/50'
+                onclick="var q=this.nextElementSibling; if(+q.value>1){q.value=+q.value-1;}">-</button>
+        <input type='number' name='quantity' min='1' value='1'
+               class='h-9 w-12 border-0 text-center text-sm text-base-fg focus:outline-none focus:ring-0' />
+        <button type='button'
+                class='px-3 py-1 text-base-sub hover:text-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/50'
+                onclick="var q=this.previousElementSibling; q.value=+q.value+1;">+</button>
       </div>
-      <button class="bg-primary hover:bg-black/80 text-white px-3 py-1.5 rounded-full text-sm font-medium flex items-center transition">
-        <i class="fas fa-shopping-cart text-sm mr-1"></i>
-        <span class="hidden sm:inline">Añadir</span>
+      <button type='submit'
+              class='inline-flex items-center justify-center rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/70'>
+        <i class='fas fa-shopping-cart mr-2 text-xs'></i>
+        Añadir
       </button>
     </form>
   </div>
-</div>
+</article>

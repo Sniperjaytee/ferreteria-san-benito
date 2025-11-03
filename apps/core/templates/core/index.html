@@ -1,36 +1,87 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}Inicio{% endblock %}
 
 {% block content %}
-<main class="container mx-auto px-3 py-6 flex-grow sm:px-4 sm:py-8">
-  <div class="text-center mb-8 sm:mb-12">
-    <h2 class="text-2xl sm:text-3xl font-bold text-primary mb-3 sm:mb-4">
-      Nuestros Productos Destacados
-    </h2>
-    <p class="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
+<div class="container mx-auto space-y-10 px-4 py-10">
+  <!-- Hero principal -->
+  <section class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-brand-600 via-brand-500 to-brand-700 text-white shadow-card">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.25),_transparent_45%),radial-gradient(circle_at_bottom,_rgba(255,255,255,0.15),_transparent_50%)]"></div>
+    <div class="relative flex flex-col gap-8 px-6 py-12 sm:px-10 lg:flex-row lg:items-center lg:justify-between">
+      <div class="max-w-xl space-y-4">
+        <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-sm font-medium uppercase tracking-wide">
+          <i class="fas fa-bolt text-accent"></i>
+          Ferretería profesional
+        </span>
+        <h1 class="text-3xl font-semibold sm:text-4xl lg:text-5xl">
+          Todo lo que necesitas para tus proyectos de construcción y remodelación
+        </h1>
+        <p class="text-base text-brand-50 sm:text-lg">
+          Herramientas, materiales y equipos con disponibilidad inmediata y precios en múltiples monedas.
+        </p>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <a href="{% url 'catalogo:productos_lista' %}"
+             class="inline-flex items-center justify-center rounded-xl bg-accent px-5 py-3 text-base font-semibold text-slate-900 shadow transition hover:bg-accent-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300">
+            Ver catálogo completo
+          </a>
+          <a href="{% url 'pedidos:carrito_ver' %}"
+             class="inline-flex items-center justify-center rounded-xl border border-white/60 px-5 py-3 text-base font-semibold text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-200">
+            Ir al carrito
+          </a>
+        </div>
+      </div>
+      <div class="relative mt-6 lg:mt-0">
+        <div class="rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur">
+          <div class="grid grid-cols-2 gap-4 text-center text-sm font-medium">
+            <div class="rounded-xl bg-white/15 p-4">
+              <span class="text-3xl font-semibold">250+</span>
+              <p class="mt-1 text-brand-50">Productos activos</p>
+            </div>
+            <div class="rounded-xl bg-white/15 p-4">
+              <span class="text-3xl font-semibold">48h</span>
+              <p class="mt-1 text-brand-50">Despacho promedio</p>
+            </div>
+            <div class="rounded-xl bg-white/15 p-4">
+              <span class="text-3xl font-semibold">12</span>
+              <p class="mt-1 text-brand-50">Categorías</p>
+            </div>
+            <div class="rounded-xl bg-white/15 p-4">
+              <span class="text-3xl font-semibold">99%</span>
+              <p class="mt-1 text-brand-50">Clientes satisfechos</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="space-y-6 text-center">
+    <h2 class="text-2xl font-semibold text-brand sm:text-3xl">Nuestros productos destacados</h2>
+    <p class="mx-auto max-w-2xl text-sm text-base-sub sm:text-base">
       Encuentra todo lo que necesitas para tus proyectos de construcción, reparación y mejoras del hogar. Calidad garantizada y precios competitivos.
     </p>
-  </div>
-
-  <div class="grid grid-cols-2 gap-4 sm:gap-5 md:gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-    {% for producto in productos_destacados %}
-      {% include 'catalogo/_product_card.html' %}
-    {% empty %}
-      <p class="text-gray-600">No hay productos destacados cargados.</p>
-    {% endfor %}
-  </div>
-
-  <div class="mt-12">
-    <h3 class="text-xl font-semibold mb-4">Explora por categorías</h3>
-    <div class="flex flex-wrap gap-2">
-      {% for c in categorias %}
-        <a class="px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300" href="{% url 'catalogo:productos_por_categoria' slug=c.slug %}">{{ c.nombre }}</a>
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      {% for producto in productos_destacados %}
+        {% include 'catalogo/_product_card.html' %}
       {% empty %}
-        <p class="text-gray-600">No hay categorías cargadas.</p>
+        <p class="col-span-full rounded-2xl border border-base-border bg-white p-6 text-base-sub">No hay productos destacados cargados.</p>
       {% endfor %}
     </div>
-  </div>
-</main>
-{% endblock content %}
+  </section>
+
+  <section class="space-y-4">
+    <h3 class="text-xl font-semibold text-base-fg">Explora por categorías</h3>
+    <div class="flex flex-wrap gap-2">
+      {% for c in categorias %}
+        <a href="{% url 'catalogo:productos_por_categoria' slug=c.slug %}"
+           class="inline-flex items-center gap-2 rounded-full border border-base-border bg-white px-4 py-2 text-sm text-base-sub transition hover:border-brand hover:text-brand">
+          <i class="fas fa-tag"></i> {{ c.nombre }}
+        </a>
+      {% empty %}
+        <p class="text-base-sub">No hay categorías cargadas.</p>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}
