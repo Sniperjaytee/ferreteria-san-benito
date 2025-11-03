@@ -47,7 +47,7 @@
 
     <section class="flex-1 space-y-6">
       {% if page_obj.object_list %}
-        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 items-stretch" style="grid-auto-rows: 1fr;">
           {% for producto in page_obj %}
             {% include 'catalogo/_product_card.html' %}
           {% endfor %}

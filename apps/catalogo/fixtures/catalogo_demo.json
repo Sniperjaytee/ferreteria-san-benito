@@ -1,0 +1,300 @@
+﻿[
+{
+  "model": "catalogo.categoria",
+  "pk": 5,
+  "fields": {
+    "nombre": "Herramientas Manuales",
+    "descripcion": "Llaves, destornilladores y kits esenciales para mantenimiento diario.",
+    "imagen": "categorias/herramientas-manuales-b70b1dc5.jpg",
+    "activa": true,
+    "orden": 2,
+    "slug": "herramientas-manuales",
+    "created_at": "2025-11-03T09:20:07.253Z",
+    "updated_at": "2025-11-03T09:23:43.645Z"
+  }
+},
+{
+  "model": "catalogo.categoria",
+  "pk": 6,
+  "fields": {
+    "nombre": "Pinturas y Acabados",
+    "descripcion": "Pinturas, rodillos y accesorios para renovar interiores y exteriores.",
+    "imagen": "categorias/pinturas-y-acabados-077ec87c.jpg",
+    "activa": true,
+    "orden": 3,
+    "slug": "pinturas-y-acabados",
+    "created_at": "2025-11-03T09:20:08.070Z",
+    "updated_at": "2025-11-03T09:23:45.148Z"
+  }
+},
+{
+  "model": "catalogo.categoria",
+  "pk": 7,
+  "fields": {
+    "nombre": "Seguridad Industrial",
+    "descripcion": "Guantes, lentes, cascos y protecci≤n personal para tu equipo.",
+    "imagen": "categorias/seguridad-industrial-b693b9e4.jpg",
+    "activa": true,
+    "orden": 4,
+    "slug": "seguridad-industrial",
+    "created_at": "2025-11-03T09:20:09.062Z",
+    "updated_at": "2025-11-03T09:23:46.846Z"
+  }
+},
+{
+  "model": "catalogo.categoria",
+  "pk": 9,
+  "fields": {
+    "nombre": "Herramientas ElΘctricas",
+    "descripcion": "Taladros, esmeriles y equipos elΘctricos para trabajos exigentes.",
+    "imagen": "categorias/herramientas-electricas-48d305dd.jpg",
+    "activa": true,
+    "orden": 1,
+    "slug": "herramientas-electricas",
+    "created_at": "2025-11-03T09:22:21.400Z",
+    "updated_at": "2025-11-03T09:23:41.768Z"
+  }
+},
+{
+  "model": "catalogo.categoria",
+  "pk": 10,
+  "fields": {
+    "nombre": "Construcci≤n y Obra",
+    "descripcion": "Herramientas y materiales para proyectos de construcci≤n pesados.",
+    "imagen": "categorias/construccion-y-obra-dd47b670.jpg",
+    "activa": true,
+    "orden": 5,
+    "slug": "construccion-y-obra",
+    "created_at": "2025-11-03T09:22:32.169Z",
+    "updated_at": "2025-11-03T09:23:48.854Z"
+  }
+},
+{
+  "model": "catalogo.producto",
+  "pk": 1,
+  "fields": {
+    "nombre": "aaa",
+    "descripcion": "",
+    "precio": "1123.00",
+    "moneda_precio": "USD",
+    "categoria": 5,
+    "stock": 0,
+    "stock_minimo": 5,
+    "imagen": "",
+    "activo": true,
+    "destacado": true,
+    "slug": "aaa-herramientas",
+    "created_at": "2025-09-22T00:15:58.074Z",
+    "updated_at": "2025-10-29T02:23:39.218Z"
+  }
+},
+{
+  "model": "catalogo.producto",
+  "pk": 2,
+  "fields": {
+    "nombre": "12123",
+    "descripcion": "",
+    "precio": "13211.00",
+    "moneda_precio": "USD",
+    "categoria": 5,
+    "stock": 0,
+    "stock_minimo": 5,
+    "imagen": "",
+    "activo": true,
+    "destacado": false,
+    "slug": "12123-11",
+    "created_at": "2025-09-22T00:32:40.217Z",
+    "updated_at": "2025-09-22T00:32:40.217Z"
+  }
+},
+{
+  "model": "catalogo.producto",
+  "pk": 3,
+  "fields": {
+    "nombre": "wircha",
+    "descripcion": "",
+    "precio": "22.00",
+    "moneda_precio": "USD",
+    "categoria": 5,
+    "stock": 179,
+    "stock_minimo": 5,
+    "imagen": "",
+    "activo": true,
+    "destacado": true,
+    "slug": "wircha-categoria-prueba-1",
+    "created_at": "2025-09-28T15:56:35.790Z",
+    "updated_at": "2025-11-02T21:28:37.565Z"
+  }
+},
+{
+  "model": "catalogo.producto",
+  "pk": 4,
+  "fields": {
+    "nombre": "Juego de Llaves Combinadas 14 pzs",
+    "descripcion": "Set de llaves combinadas en milφmetros con acabado cromado pulido.",
+    "precio": "54.90",
+    "moneda_precio": "USD",
+    "categoria": 5,
+    "stock": 25,
+    "stock_minimo": 8,
+    "imagen": "productos/juego-de-llaves-combinadas-14-pzs-1e9a4ce2.jpg",
+    "activo": true,
+    "destacado": true,
+    "slug": "juego-de-llaves-combinadas-14-pzs-herramientas-manuales",
+    "created_at": "2025-11-03T09:20:10.859Z",
+    "updated_at": "2025-11-03T09:23:54.615Z"
+  }
+},
+{
+  "model": "catalogo.producto",
+  "pk": 5,
+  "fields": {
+    "nombre": "Rodillo Antigoteo 9\"",
+    "descripcion": "Rodillo antigoteo con charola incluida, ideal para acabados lisos.",
+    "precio": "12.80",
+    "moneda_precio": "USD",
+    "categoria": 6,
+    "stock": 40,
+    "stock_minimo": 13,
+    "imagen": "productos/rodillo-antigoteo-9-c9399970.jpg",
+    "activo": true,
+    "destacado": false,
+    "slug": "rodillo-antigoteo-9-pinturas-y-acabados",
+    "created_at": "2025-11-03T09:20:11.713Z",
+    "updated_at": "2025-11-03T09:23:56.844Z"
+  }
+},
+{
+  "model": "catalogo.producto",
+  "pk": 6,
+  "fields": {
+    "nombre": "Casco de Seguridad con Arn├⌐s",
+    "descripcion": "Casco de seguridad industrial con arn├⌐s de 6 puntos y visera intercambiable.",
+    "precio": "21.30",
+    "moneda_precio": "USD",
+    "categoria": 7,
+    "stock": 30,
+    "stock_minimo": 10,
+    "imagen": "",
+    "activo": true,
+    "destacado": true,
+    "slug": "casco-de-seguridad-con-arnas-seguridad-industrial",
+    "created_at": "2025-11-03T09:20:12.576Z",
+    "updated_at": "2025-11-03T09:20:13.591Z"
+  }
+},
+{
+  "model": "catalogo.producto",
+  "pk": 7,
+  "fields": {
+    "nombre": "Guantes Anticorte Nivel 5",
+    "descripcion": "Guantes resistentes a cortes con recubrimiento de nitrilo para mejor agarre.",
+    "precio": "8.75",
+    "moneda_precio": "USD",
+    "categoria": 7,
+    "stock": 60,
+    "stock_minimo": 20,
+    "imagen": "productos/guantes-anticorte-nivel-5-f834b6ec.jpg",
+    "activo": true,
+    "destacado": false,
+    "slug": "guantes-anticorte-nivel-5-seguridad-industrial",
+    "created_at": "2025-11-03T09:20:13.599Z",
+    "updated_at": "2025-11-03T09:24:01.046Z"
+  }
+},
+{
+  "model": "catalogo.producto",
+  "pk": 8,
+  "fields": {
+    "nombre": "Taladro Percutor 750W",
+    "descripcion": "Taladro percutor de 750W con velocidad variable y maletφn de transporte.",
+    "precio": "89.99",
+    "moneda_precio": "USD",
+    "categoria": 9,
+    "stock": 18,
+    "stock_minimo": 6,
+    "imagen": "productos/taladro-percutor-750w-7f7f25ce.jpg",
+    "activo": true,
+    "destacado": true,
+    "slug": "taladro-percutor-750w-herramientas-electricas",
+    "created_at": "2025-11-03T09:22:32.175Z",
+    "updated_at": "2025-11-03T09:23:51.309Z"
+  }
+},
+{
+  "model": "catalogo.producto",
+  "pk": 9,
+  "fields": {
+    "nombre": "Esmeril Angular 4-1/2\"",
+    "descripcion": "Esmeril angular compacto de 900W ideal para cortes y desbastes.",
+    "precio": "74.50",
+    "moneda_precio": "USD",
+    "categoria": 9,
+    "stock": 12,
+    "stock_minimo": 4,
+    "imagen": "productos/esmeril-angular-4-12-8ba9dea6.jpg",
+    "activo": true,
+    "destacado": true,
+    "slug": "esmeril-angular-4-12-herramientas-electricas",
+    "created_at": "2025-11-03T09:22:35.847Z",
+    "updated_at": "2025-11-03T09:23:52.949Z"
+  }
+},
+{
+  "model": "catalogo.producto",
+  "pk": 10,
+  "fields": {
+    "nombre": "Casco de Seguridad con ArnΘs",
+    "descripcion": "Casco de seguridad industrial con arnΘs de 6 puntos y visera intercambiable.",
+    "precio": "21.30",
+    "moneda_precio": "USD",
+    "categoria": 7,
+    "stock": 30,
+    "stock_minimo": 10,
+    "imagen": "productos/casco-de-seguridad-con-arnes-4804de73.jpg",
+    "activo": true,
+    "destacado": true,
+    "slug": "casco-de-seguridad-con-arnes-seguridad-industrial",
+    "created_at": "2025-11-03T09:22:44.165Z",
+    "updated_at": "2025-11-03T09:23:59.088Z"
+  }
+},
+{
+  "model": "catalogo.producto",
+  "pk": 11,
+  "fields": {
+    "nombre": "Cortadora de Baldosas 65cm",
+    "descripcion": "Cortadora manual con base reforzada y guφa de corte ajustable.",
+    "precio": "129.00",
+    "moneda_precio": "USD",
+    "categoria": 10,
+    "stock": 9,
+    "stock_minimo": 3,
+    "imagen": "productos/cortadora-de-baldosas-65cm-5e3f219f.jpg",
+    "activo": true,
+    "destacado": true,
+    "slug": "cortadora-de-baldosas-65cm-construccion-y-obra",
+    "created_at": "2025-11-03T09:22:50.395Z",
+    "updated_at": "2025-11-03T09:24:04.033Z"
+  }
+},
+{
+  "model": "catalogo.producto",
+  "pk": 12,
+  "fields": {
+    "nombre": "Carretilla de Acero 130L",
+    "descripcion": "Carretilla reforzada con llanta neumßtica para trabajos de obra pesada.",
+    "precio": "98.50",
+    "moneda_precio": "USD",
+    "categoria": 10,
+    "stock": 7,
+    "stock_minimo": 2,
+    "imagen": "productos/carretilla-de-acero-130l-2c483949.jpg",
+    "activo": true,
+    "destacado": false,
+    "slug": "carretilla-de-acero-130l-construccion-y-obra",
+    "created_at": "2025-11-03T09:22:54.079Z",
+    "updated_at": "2025-11-03T09:24:05.552Z"
+  }
+}
+]

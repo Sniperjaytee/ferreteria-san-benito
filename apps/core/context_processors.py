@@ -1,4 +1,5 @@
-from typing import Dict, Optional
+﻿from typing import Dict, Optional
+from django.conf import settings
 from core.models import ConfiguracionMoneda
 from catalogo.models import Categoria
 try:
@@ -32,11 +33,20 @@ def cart(request) -> Dict[str, int]:
 
     # Branding assets (logo, favicon) if present in static/img/
     logo_path = (
-        _detect_asset('img/logo.svg')
+        _detect_asset('img/logo2.svg')
+        or _detect_asset('img/logo2.png')
+        or _detect_asset('img/logo2.jpg')
+        or _detect_asset('img/logo.svg')
         or _detect_asset('img/logo.png')
         or _detect_asset('img/logo.jpg')
     )
-    favicon_path = _detect_asset('img/favicon.ico')
+    # Favicon preference order: logo2 (svg/png) -> favicon.svg -> favicon.ico
+    favicon_path = (
+        _detect_asset('img/logo2.svg')
+        or _detect_asset('img/logo2.png')
+        or _detect_asset('img/favicon.svg')
+        or _detect_asset('img/favicon.ico')
+    )
 
     return {
         'cart_count': count,
@@ -47,4 +57,7 @@ def cart(request) -> Dict[str, int]:
         'categorias_nav': list(Categoria.objects.filter(activa=True).order_by('orden')[:8]),
         'logo_path': logo_path,
         'favicon_path': favicon_path,
+        'whatsapp_phone': getattr(settings, 'WHATSAPP_PHONE', ''),
+        'whatsapp_link': ('https://wa.me/' + getattr(settings, 'WHATSAPP_PHONE', '').strip()),
     }
+

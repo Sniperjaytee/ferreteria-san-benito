@@ -1,6 +1,6 @@
-﻿{% load static tailwind_tags %}
+﻿{% load static tailwind_tags ui_auth %}
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="overflow-x-hidden">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,84 +11,90 @@
     <link rel="icon" href="{% static favicon_path %}" type="image/x-icon" />
   {% endif %}
   {% tailwind_css %}
+  <style>
+    html, body { overflow-x: hidden; }
+  </style>
 </head>
-<body class="min-h-screen bg-base-surface font-sans text-base text-base-fg">
+<body class="min-h-screen bg-base-surface font-sans text-base text-base-fg overflow-x-hidden">
   <div class="flex min-h-screen flex-col">
-    <header class="sticky top-0 z-50 border-b border-base-border bg-base-bg/95 backdrop-blur supports-[backdrop-filter]:bg-base-bg/80">
-      <div class="container mx-auto flex flex-col gap-3 px-4 py-4 md:flex-row md:items-center">
-        <a href="{% url 'core:index' %}" class="flex items-center gap-3">
-          {% if logo_path %}
-            <img src="{% static logo_path %}" alt="Ferreteria San Benito" class="h-10 w-auto" />
-          {% else %}
-            <span class="text-2xl font-semibold text-brand">Ferreteria San Benito</span>
-          {% endif %}
-        </a>
-
-        <form action="{% url 'catalogo:productos_lista' %}" method="get" class="relative flex-1 max-w-3xl">
-          <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brand">
-            <i class="fas fa-search"></i>
-          </span>
-          <input type="search" name="q" placeholder="¿Qué buscas hoy?"
-                 class="w-full rounded-full border border-base-border bg-base-surface pl-12 pr-4 py-2 text-base focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/40" />
-        </form>
-
-        <div class="flex items-center gap-3">
-          <form action="{% url 'core:set_moneda' %}" method="get">
-            <label for="currency-select" class="sr-only">Moneda</label>
-            <select id="currency-select" name="m"
-                    class="rounded-full border border-base-border bg-base-surface px-4 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/40"
-                    onchange="this.form.submit()">
-              {% for m in monedas_disponibles %}
-                <option value="{{ m }}" {% if m == moneda_actual %}selected{% endif %}>{{ m }}</option>
-              {% endfor %}
-            </select>
-          </form>
-
-          {% if user.is_authenticated %}
-            <a href="{% url 'logout' %}"
-               class="rounded-full border border-brand px-4 py-2 text-sm font-medium text-brand transition hover:bg-brand hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/60">
-              Cerrar sesión
+    <header class="sticky top-0 z-50 border-b border-base-border bg-base-bg/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-base-bg/80">
+      <div class="container mx-auto px-4 py-3">
+        <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div class="flex items-center justify-between gap-3">
+            <a href="{% url 'core:index' %}" class="flex items-center gap-2 md:gap-3">
+              {% if logo_path %}
+                <img src="{% static logo_path %}" alt="Ferreteria San Benito" class="h-10 w-auto" />
+              {% else %}
+                <span class="text-2xl font-semibold text-brand">Ferreteria San Benito</span>
+              {% endif %}
             </a>
-          {% else %}
-            <a href="{% url 'login' %}"
-               class="rounded-full border border-base-border px-4 py-2 text-sm font-medium text-base-fg transition hover:border-brand hover:text-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/60">
-              Iniciar sesión
-            </a>
-            <a href="{% url 'core:registro' %}"
-               class="rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/70">
-              Registrarse
-            </a>
-          {% endif %}
+            <div class="flex items-center gap-2 lg:hidden">
+              <a href="{% url 'pedidos:carrito_ver' %}"
+                 class="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-base-border bg-base-surface text-base-fg transition hover:border-brand hover:text-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/60"
+                 aria-label="Ver carrito">
+                <i class="fas fa-shopping-cart text-lg"></i>
+                <span class="absolute -top-1 -right-1 inline-flex min-h-[1.25rem] min-w-[1.25rem] items-center justify-center rounded-full bg-accent px-1 text-xs font-semibold text-slate-900">
+                  {{ cart_count|default:0 }}
+                </span>
+              </a>
+            </div>
+          </div>
 
-          <a href="{% url 'pedidos:carrito_ver' %}"
-             class="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-base-border bg-base-surface text-base-fg transition hover:border-brand hover:text-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/60"
-             aria-label="Ver carrito">
-            <i class="fas fa-shopping-cart text-lg"></i>
-            <span class="absolute -top-1 -right-1 inline-flex min-h-[1.25rem] min-w-[1.25rem] items-center justify-center rounded-full bg-accent px-1 text-xs font-semibold text-slate-900">
-              {{ cart_count|default:0 }}
-            </span>
-          </a>
+          <div class="flex flex-col gap-3 lg:flex-1 lg:flex-row lg:items-center lg:gap-4">
+            <div class="order-1 w-full lg:order-1 lg:flex-1 lg:max-w-2xl">
+              <form action="{% url 'catalogo:productos_lista' %}" method="get" class="relative">
+                <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brand">
+                  <i class="fas fa-search"></i>
+                </span>
+                <input type="search"
+                       name="q"
+                       placeholder="¿Qué buscas hoy?"
+                       class="w-full rounded-full border border-base-border bg-base-surface py-2 pl-12 pr-4 text-base focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/40" />
+              </form>
+            </div>
+
+            <div class="order-2 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end sm:gap-3 lg:order-2 lg:flex-1 lg:justify-end isolate">
+              <form action="{% url 'core:set_moneda' %}" method="get" class="w-full sm:w-auto relative z-40">
+                <label for="currency-select" class="sr-only">Moneda</label>
+                <select id="currency-select" name="m"
+                        class="min-w-[90px] w-full rounded-xl border border-base-border bg-base-surface px-4 py-2 text-sm text-base-fg focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/40 relative z-50"
+                        onchange="this.form.submit()">
+                  {% for m in monedas_disponibles %}
+                    <option value="{{ m }}" {% if m == moneda_actual %}selected{% endif %}>{{ m }}</option>
+                  {% endfor %}
+                </select>
+              </form>
+
+              {% auth_cta %}
+
+              <a href="{% url 'pedidos:carrito_ver' %}"
+                 class="relative hidden h-10 w-10 items-center justify-center rounded-full border border-base-border bg-base-surface text-base-fg transition hover:border-brand hover:text-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/60 lg:inline-flex z-10"
+                 aria-label="Ver carrito">
+                <i class="fas fa-shopping-cart text-lg"></i>
+                <span class="absolute -top-1 -right-1 inline-flex min-h-[1.25rem] min-w-[1.25rem] items-center justify-center rounded-full bg-accent px-1 text-xs font-semibold text-slate-900">
+                  {{ cart_count|default:0 }}
+                </span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="border-t border-base-border bg-base-bg">
-        <div class="container mx-auto flex flex-wrap items-center justify-center gap-3 px-4 py-2 text-sm font-medium text-base-sub md:justify-between">
-          <nav class="flex flex-wrap items-center justify-center gap-3 md:gap-4">
-            <a href="{% url 'core:index' %}" class="rounded-full px-3 py-1 transition hover:bg-brand/10 hover:text-brand">Inicio</a>
-            <a href="{% url 'catalogo:productos_lista' %}" class="rounded-full px-3 py-1 transition hover:bg-brand/10 hover:text-brand">Productos</a>
-            <a href="{% url 'catalogo:categorias' %}" class="rounded-full px-3 py-1 transition hover:bg-brand/10 hover:text-brand">Categorías</a>
-            <a href="{% url 'core:ubicacion' %}" class="rounded-full px-3 py-1 transition hover:bg-brand/10 hover:text-brand">Ubicación</a>
-            <a href="{% url 'core:preguntas' %}" class="rounded-full px-3 py-1 transition hover:bg-brand/10 hover:text-brand">Preguntas</a>
-            <a href="{% url 'core:envios' %}" class="rounded-full px-3 py-1 transition hover:bg-brand/10 hover:text-brand">Envíos</a>
-            <a href="{% url 'core:contacto' %}" class="rounded-full px-3 py-1 transition hover:bg-brand/10 hover:text-brand">Contacto</a>
-            <a href="{% url 'core:landing' %}" class="rounded-full px-3 py-1 transition hover:bg-brand/10 hover:text-brand">Landing</a>
+        <div class="container mx-auto px-4 py-2">
+          <nav id="primary-nav"
+               class="flex w-full flex-wrap items-center justify-center gap-2 px-1 text-sm font-medium text-base-sub sm:gap-3 md:gap-4 md:px-0"
+               aria-label="Menú principal">
+            <a href="{% url 'core:index' %}" class="rounded-xl px-3 py-2 transition hover:bg-brand/10 hover:text-brand">Inicio</a>
+            <a href="{% url 'catalogo:productos_lista' %}" class="rounded-xl px-3 py-2 transition hover:bg-brand/10 hover:text-brand">Productos</a>
+            <a href="{% url 'catalogo:categorias' %}" class="rounded-xl px-3 py-2 transition hover:bg-brand/10 hover:text-brand">Categorías</a>
+            <a href="{% url 'core:ubicacion' %}" class="rounded-xl px-3 py-2 transition hover:bg-brand/10 hover:text-brand">Ubicación</a>
+            
           </nav>
-          <div class="hidden text-xs text-base-sub md:block">
-            <span class="font-semibold text-brand">Explora:</span> Inicio · Productos · Categorías · Ubicación · Preguntas · Envíos · Contacto
-          </div>
         </div>
       </div>
     </header>
+
 
     <div class="container mx-auto px-4 py-4">
       {% if messages %}
@@ -108,8 +114,8 @@
       <div class="container mx-auto grid gap-8 px-4 md:grid-cols-3">
         <div class="space-y-3">
           <h3 class="text-xl font-semibold text-brand">Ferreteria San Benito</h3>
-          <p class="text-sm text-base-sub">Ferreteria y materiales de construccion de calidad.</p>
-          <p class="text-xs text-base-sub">Â© 2025 Ferreteria San Benito. Todos los derechos reservados.</p>
+          <p class="text-sm text-base-sub">Ferreteria y materiales de construcción de calidad.</p>
+          <p class="text-xs text-base-sub">© 2025 Ferreteria San Benito. Todos los derechos reservados.</p>
         </div>
         <div class="space-y-4 text-center md:text-left">
           <h3 class="text-lg font-semibold">Síguenos</h3>
@@ -129,11 +135,11 @@
           </div>
         </div>
         <div class="space-y-2 text-center md:text-right">
-          <h3 class="text-lg font-semibold">Información</h3>
+          <h3 class="text-lg font-semibold">Informacion</h3>
           <ul class="space-y-2 text-sm text-base-sub">
-            <li><a href="{% url 'core:ubicacion' %}" class="transition hover:text-brand">Ubicacion</a></li>
+            <li><a href="{% url 'core:ubicacion' %}" class="transition hover:text-brand">Ubicación</a></li>
             <li><a href="{% url 'core:preguntas' %}" class="transition hover:text-brand">Preguntas frecuentes</a></li>
-            <li><a href="{% url 'core:envios' %}" class="transition hover:text-brand">Envioooooooooooooooooooooooooooooooooooooooos</a></li>
+            <li><a href="{% url 'core:envios' %}" class="transition hover:text-brand break-words">Envíos</a></li>
             <li><a href="{% url 'core:contacto' %}" class="transition hover:text-brand">Contacto</a></li>
           </ul>
         </div>
@@ -145,7 +151,6 @@
 </body>
 </html>
 <!-- NEW_BASE_MARKER -->
-
 
 
 

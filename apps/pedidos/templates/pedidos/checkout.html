@@ -74,6 +74,7 @@
           <span>Total</span>
           <span>${{ total }}</span>
         </div>
+        <p class="text-xs text-base-sub">Equivalente: {{ simbolo_moneda }}{{ total_convertido|floatformat:2 }}</p>
       </div>
       <div class="space-y-3 border-t border-base-border pt-4 text-xs text-base-sub">
         <div class="flex items-center gap-3">
@@ -93,3 +94,4 @@
   </div>
 </div>
 {% endblock %}
+

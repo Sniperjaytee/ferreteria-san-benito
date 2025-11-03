@@ -1,0 +1,196 @@
+/*Register*/
+/*Tambien usar este CSS como archivo separado al principal o se rompera todo*/
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+/* Scoped: evitar sobreescribir el fondo global del sitio */
+.auth-page {
+  font-family: "Poppins", sans-serif;
+  padding: 20px;
+}
+
+.auth-page .form-container {
+  animation: fadeIn 0.6s ease-out;
+  transform-origin: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+@media (min-width: 768px) {
+  .auth-page .form-container {
+    animation: float 6s ease-in-out infinite;
+  }
+}
+
+.auth-page .input-group {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+/* Garantizar que el campo sea clickeable incluso tras re-render */
+.auth-page .input-group .input-field {
+  position: relative;
+  z-index: 10;
+  cursor: text;
+}
+.auth-page .input-group .password-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+}
+.auth-page .input-group .input-label {
+  pointer-events: none;
+}
+
+.auth-page .input-field {
+  width: 100%;
+  padding: 1rem 1rem 0.5rem 1rem;
+  border: 0;
+  border-bottom: 2px solid #cbd5e1;
+  background-color: transparent;
+  outline: none;
+  transition: 0.3s;
+  font-size: 1rem;
+}
+
+.auth-page .input-field.valid {
+  border-bottom: 2px solid #10b981;
+}
+
+.auth-page .input-field.invalid {
+  border-bottom: 2px solid #ef4444;
+}
+
+.auth-page .input-label {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  color: #94a3b8;
+  transition: 0.3s;
+  pointer-events: none;
+}
+
+.auth-page .input-field:focus {
+  border-bottom: 2px solid #0d3b66;
+}
+
+.auth-page .input-field:focus + .input-label,
+.auth-page .input-field:not(:placeholder-shown) + .input-label {
+  top: -0.5rem;
+  left: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: white;
+  padding: 0 0.25rem;
+}
+
+.auth-page .input-field.valid:focus + .input-label,
+.auth-page .input-field.valid:not(:placeholder-shown) + .input-label {
+  color: #10b981;
+}
+
+.auth-page .input-field.invalid:focus + .input-label,
+.auth-page .input-field.invalid:not(:placeholder-shown) + .input-label {
+  color: #ef4444;
+}
+
+.auth-page .validation-message {
+  position: absolute;
+  bottom: -1.5rem;
+  left: 0;
+  font-size: 0.75rem;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: 0.3s;
+}
+
+.auth-page .input-field.invalid ~ .validation-message {
+  opacity: 1;
+  transform: translateY(0);
+  color: #ef4444;
+}
+
+.auth-page .input-highlight {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background-color: #0d3b66;
+  transition: 0.4s;
+}
+
+.auth-page .input-field:focus ~ .input-highlight {
+  width: 100%;
+}
+
+.auth-page .btn-register {
+  background: linear-gradient(135deg, #0d3b66 0%, #1d5a9b 100%);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.auth-page .btn-register:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(13, 59, 102, 0.3);
+}
+
+.auth-page .btn-register::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: rotate(30deg);
+  transition: transform 0.6s;
+}
+
+.auth-page .btn-register:hover::after {
+  transform: rotate(30deg) translate(20%, 20%);
+}
+
+.auth-page .password-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #94a3b8;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-page .form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .auth-page .form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

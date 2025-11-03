@@ -1,0 +1,22 @@
+{% if user and user.is_authenticated %}
+  <a href="{% url 'core:perfil' %}"
+     class="w-full rounded-xl border border-base-border px-4 py-2 text-center text-sm font-medium text-base-fg transition hover:border-brand hover:text-brand sm:w-auto">
+    <i class="fas fa-user mr-1"></i> @{{ user.username }}
+  </a>
+  <form method="post" action="{% url 'logout' %}" class="inline-block">
+    {% csrf_token %}
+    <button type="submit"
+       class="w-full rounded-xl border border-brand px-5 py-2 text-center text-sm font-medium text-brand transition hover:bg-brand hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/60 sm:w-auto">
+      Cerrar sesión
+    </button>
+  </form>
+{% else %}
+  <a href="{% url 'login' %}{% if next %}?next={{ next|urlencode }}{% endif %}"
+     class="w-full rounded-xl border border-base-border px-5 py-2 text-center text-sm font-medium text-base-fg transition hover:border-brand hover:text-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/60 sm:w-auto">
+    Iniciar sesión
+  </a>
+  <a href="{% url 'core:registro' %}{% if next %}?next={{ next|urlencode }}{% endif %}"
+     class="w-full rounded-xl bg-brand px-5 py-2 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/70 sm:w-auto">
+    Registrarse
+  </a>
+{% endif %}

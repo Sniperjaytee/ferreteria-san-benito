@@ -6,8 +6,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from catalogo.models import Producto
-from core.models import ConfiguracionMoneda
-from .models import ItemPedido, Pedido
+from core.models import ConfiguracionMoneda, TasaCambio
+from .models import ItemPedido, Pedido, Carrito
 
 
 def _get_cart(session):
@@ -72,11 +72,21 @@ def carrito_agregar(request):
     if producto.stock is not None and nuevo_total > producto.stock:
         cart[str(product_id)] = producto.stock
         request.session.modified = True
+        # Sincronizar DB si autenticado
+        if request.user.is_authenticated:
+            item, _ = Carrito.objects.get_or_create(usuario=request.user, producto=producto)
+            item.cantidad = producto.stock
+            item.save(update_fields=['cantidad'])
         messages.warning(request, f'Solo hay {producto.stock} unidades disponibles de {producto.nombre}.')
         return redirect(request.META.get('HTTP_REFERER', 'pedidos:carrito_ver'))
 
     cart[str(product_id)] = nuevo_total
     request.session.modified = True
+    # Sincronizar DB si autenticado
+    if request.user.is_authenticated:
+        item, created = Carrito.objects.get_or_create(usuario=request.user, producto=producto)
+        item.cantidad = nuevo_total
+        item.save(update_fields=['cantidad'])
     messages.success(request, f'Se añadió {producto.nombre} al carrito.')
     return redirect(request.META.get('HTTP_REFERER', 'pedidos:carrito_ver'))
 
@@ -90,8 +100,14 @@ def carrito_actualizar(request):
         qty = max(0, int(quantity))
         if qty == 0:
             cart.pop(product_id, None)
+            if request.user.is_authenticated:
+                Carrito.objects.filter(usuario=request.user, producto_id=int(product_id)).delete()
         else:
             cart[product_id] = qty
+            if request.user.is_authenticated:
+                Carrito.objects.update_or_create(
+                    usuario=request.user, producto_id=int(product_id), defaults={'cantidad': qty}
+                )
         request.session.modified = True
     return redirect('pedidos:carrito_ver')
 
@@ -102,6 +118,11 @@ def carrito_eliminar(request):
     cart = _get_cart(request.session)
     cart.pop(product_id, None)
     request.session.modified = True
+    if request.user.is_authenticated:
+        try:
+            Carrito.objects.filter(usuario=request.user, producto_id=int(product_id)).delete()
+        except Exception:
+            pass
     return redirect('pedidos:carrito_ver')
 
 
@@ -109,6 +130,8 @@ def carrito_eliminar(request):
 def carrito_limpiar(request):
     request.session['cart'] = {}
     request.session.modified = True
+    if request.user.is_authenticated:
+        Carrito.objects.filter(usuario=request.user).delete()
     return redirect('pedidos:carrito_ver')
 
 
@@ -181,9 +204,23 @@ def checkout(request):
         request.session.modified = True
         return redirect('pedidos:pedido_confirmacion', numero_pedido=pedido.numero_pedido)
 
+    # Calcular equivalente en moneda seleccionada
+    config = ConfiguracionMoneda.obtener_configuracion()
+    moneda_actual = request.session.get('moneda', config.moneda_principal)
+    total_convertido = total
+    try:
+        if items:
+            moneda_origen = items[0]['producto'].moneda_precio
+            if moneda_origen != moneda_actual:
+                tasa = TasaCambio.obtener_tasa(moneda_origen, moneda_actual)
+                total_convertido = total * tasa
+    except Exception:
+        total_convertido = total
+
     return render(request, 'pedidos/checkout.html', {
         'items': items,
         'total': total,
+        'total_convertido': total_convertido,
     })
 
 
@@ -191,4 +228,3 @@ def checkout(request):
 def pedido_confirmacion(request, numero_pedido):
     pedido = get_object_or_404(Pedido, numero_pedido=numero_pedido, usuario=request.user)
     return render(request, 'pedidos/confirmacion.html', {'pedido': pedido})
-

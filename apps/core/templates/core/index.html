@@ -1,10 +1,14 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}Inicio{% endblock %}
 
 {% block content %}
-<div class="container mx-auto space-y-10 px-4 py-10">
+<div class="container mx-auto space-y-10 px-4 py-10 overflow-x-clip">
+  <style>
+    #destacados-carousel { -ms-overflow-style: none; scrollbar-width: none; }
+    #destacados-carousel::-webkit-scrollbar { display: none; }
+  </style>
   <!-- Hero principal -->
   <section class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-brand-600 via-brand-500 to-brand-700 text-white shadow-card">
     <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.25),_transparent_45%),radial-gradient(circle_at_bottom,_rgba(255,255,255,0.15),_transparent_50%)]"></div>
@@ -22,11 +26,11 @@
         </p>
         <div class="flex flex-col gap-3 sm:flex-row">
           <a href="{% url 'catalogo:productos_lista' %}"
-             class="inline-flex items-center justify-center rounded-xl bg-accent px-5 py-3 text-base font-semibold text-slate-900 shadow transition hover:bg-accent-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300">
+             class="inline-flex w-full items-center justify-center rounded-xl bg-accent px-5 py-3 text-base font-semibold text-slate-900 shadow transition hover:bg-accent-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300 sm:w-auto">
             Ver catálogo completo
           </a>
           <a href="{% url 'pedidos:carrito_ver' %}"
-             class="inline-flex items-center justify-center rounded-xl border border-white/60 px-5 py-3 text-base font-semibold text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-200">
+             class="inline-flex w-full items-center justify-center rounded-xl border border-white/60 px-5 py-3 text-base font-semibold text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-200 sm:w-auto">
             Ir al carrito
           </a>
         </div>
@@ -61,12 +65,25 @@
     <p class="mx-auto max-w-2xl text-sm text-base-sub sm:text-base">
       Encuentra todo lo que necesitas para tus proyectos de construcción, reparación y mejoras del hogar. Calidad garantizada y precios competitivos.
     </p>
-    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-      {% for producto in productos_destacados %}
-        {% include 'catalogo/_product_card.html' %}
-      {% empty %}
-        <p class="col-span-full rounded-2xl border border-base-border bg-white p-6 text-base-sub">No hay productos destacados cargados.</p>
-      {% endfor %}
+    <div class="relative overflow-x-hidden max-w-screen-xl mx-auto">
+      <button type="button" aria-label="Anterior" data-carousel-prev
+              class="absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full border border-base-border bg-white/90 p-2 shadow transition hover:bg-white">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button type="button" aria-label="Siguiente" data-carousel-next
+              class="absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full border border-base-border bg-white/90 p-2 shadow transition hover:bg-white">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+
+      <div id="destacados-carousel" class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-8 pb-2">
+        {% for producto in productos_destacados %}
+          <div class="w-64 shrink-0 snap-start">
+            {% include 'catalogo/_product_card.html' %}
+          </div>
+        {% empty %}
+          <p class="rounded-2xl border border-base-border bg-white p-6 text-base-sub">No hay productos destacados cargados.</p>
+        {% endfor %}
+      </div>
     </div>
   </section>
 
@@ -85,3 +102,20 @@
   </section>
 </div>
 {% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+  (function () {
+    const container = document.getElementById('destacados-carousel');
+    if (!container) return;
+    const prev = document.querySelector('[data-carousel-prev]');
+    const next = document.querySelector('[data-carousel-next]');
+    const step = () => Math.max(container.clientWidth * 0.9, 250);
+    const scrollByX = (x) => container.scrollBy({ left: x, behavior: 'smooth' });
+    prev && prev.addEventListener('click', () => scrollByX(-step()));
+    next && next.addEventListener('click', () => scrollByX(step()));
+  })();
+</script>
+{% endblock %}
+

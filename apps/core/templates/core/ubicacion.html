@@ -4,12 +4,26 @@
 
 {% block content %}
 <main class="container mx-auto px-4 py-10">
-  <h1 class="text-2xl font-bold text-primary mb-4">Nuestra ubicación</h1>
-  <p class="text-gray-600 mb-6">Encuéntranos en nuestra sede principal. Próximamente añadiremos un mapa interactivo.</p>
-  <div class="bg-white rounded-lg shadow p-6">
-    <p class="font-semibold">Dirección</p>
-    <p>San Benito, Venezuela</p>
+  <h1 class="mb-4 text-2xl font-bold text-brand">Nuestra ubicación</h1>
+  <div class="grid gap-6 md:grid-cols-2 items-stretch">
+    <section class="space-y-3 rounded-2xl border border-base-border bg-white p-6 shadow">
+      <h2 class="text-lg font-semibold text-base-fg">Dirección</h2>
+      <p class="text-sm text-base-sub">Junco Páramo parte alta</p>
+      <p class="text-sm text-base-sub">Referencia: subiendo por la escuela Baldomera Jara</p>
+      <p class="text-sm text-base-sub">San Benito, Venezuela</p>
+    </section>
+    <section class="overflow-hidden rounded-2xl border border-base-border bg-base-bg shadow">
+      <div class="relative h-[420px] w-full md:h-[520px]">
+        <iframe
+          src="{{ maps_embed_url }}"
+          width="100%"
+          height="100%"
+          style="border:0;"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </section>
   </div>
 </main>
 {% endblock %}
-

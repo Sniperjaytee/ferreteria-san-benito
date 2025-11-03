@@ -7,13 +7,13 @@
 <div class="container mx-auto px-4 py-10">
   <div class="grid gap-8 lg:grid-cols-[1.1fr_minmax(0,0.9fr)]">
     <div class="rounded-2xl border border-base-border bg-base-bg p-6 shadow-card">
-      <div class="flex aspect-square items-center justify-center rounded-2xl border-2 border-dashed border-base-border bg-white">
+      <div class="relative aspect-square overflow-hidden rounded-2xl border-2 border-dashed border-base-border bg-white">
         {% if producto.imagen %}
           <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}"
-               loading="lazy" class="h-full w-full object-contain" />
+               loading="lazy" class="absolute inset-0 h-full w-full object-cover" />
         {% else %}
           <img src="{% static 'img/madera.jpg' %}" alt="{{ producto.nombre }}"
-               loading="lazy" class="h-full w-full object-contain" />
+               loading="lazy" class="absolute inset-0 h-full w-full object-cover" />
         {% endif %}
       </div>
     </div>
@@ -44,9 +44,9 @@
         <input type="hidden" name="product_id" value="{{ producto.id }}" />
         <div class="inline-flex items-center rounded-full border border-base-border">
           <button type="button" class="px-4 py-2 text-base-sub hover:text-brand"
-                  onclick="var q=this.nextElementSibling; if(+q.value>1){q.value=+q.value-1;}">−</button>
+                  onclick="var q=this.nextElementSibling; if(+q.value>1){q.value=+q.value-1;}">-</button>
           <input type="number" name="quantity" min="1" value="1"
-                 class="h-10 w-14 border-0 text-center text-sm text-base-fg focus:outline-none focus:ring-0" />
+                 class="h-10 w-14 border-0 text-center text-sm text-base-fg appearance-none focus:outline-none focus:ring-0 [appearance:textfield] [-moz-appearance:textfield]" />
           <button type="button" class="px-4 py-2 text-base-sub hover:text-brand"
                   onclick="var q=this.previousElementSibling; q.value=+q.value+1;">+</button>
         </div>
@@ -80,6 +80,35 @@
           </div>
         </div>
       </div>
+
+      {% comment %} Sección de comentarios {% endcomment %}
+      <div class="space-y-4 border-t border-base-border pt-4">
+        <h3 class="text-lg font-semibold text-base-fg">Comentarios</h3>
+        {% if comentarios %}
+          <ul class="space-y-3">
+            {% for c in comentarios %}
+              <li class="rounded-xl border border-base-border bg-white p-3">
+                <p class="text-sm text-base-fg">{{ c.contenido|linebreaksbr }}</p>
+                <p class="mt-1 text-xs text-base-sub">Por {{ c.nombre|default:'Anónimo' }} • {{ c.created_at|date:'d/m/Y H:i' }}</p>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-sm text-base-sub">Sé el primero en comentar este producto.</p>
+        {% endif %}
+
+        <form method="post" class="space-y-2">
+          {% csrf_token %}
+          {% if not user.is_authenticated %}
+            <input type="text" name="nombre" placeholder="Tu nombre (opcional)"
+                   class="w-full rounded-xl border border-base-border bg-white px-4 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/40" />
+          {% endif %}
+          <textarea name="contenido" rows="3" required placeholder="Escribe tu comentario"
+                    class="w-full rounded-xl border border-base-border bg-white px-4 py-3 text-sm text-base-fg focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/40"></textarea>
+          <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-brand px-5 py-2 text-sm font-semibold text-white hover:bg-brand-700">Enviar comentario</button>
+        </form>
+      </div>
+
     </aside>
   </div>
 
@@ -95,3 +124,4 @@
   {% endif %}
 </div>
 {% endblock %}
+

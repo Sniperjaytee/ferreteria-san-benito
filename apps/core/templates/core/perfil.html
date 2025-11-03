@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mi perfil{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-10">
+  <div class="mx-auto max-w-2xl space-y-6">
+    <div class="rounded-2xl border border-base-border bg-base-bg p-6 shadow-card">
+      <div class="flex items-center gap-4">
+        <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand text-white"><i class="fas fa-user"></i></span>
+        <div>
+          <h1 class="text-2xl font-semibold text-base-fg">Hola, {{ nombre_completo }}</h1>
+          <p class="text-sm text-base-sub">Usuario: @{{ username }}</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="rounded-2xl border border-base-border bg-white p-6 shadow">
+      <h2 class="mb-4 text-lg font-semibold text-base-fg">Información de la cuenta</h2>
+      <dl class="grid gap-3 sm:grid-cols-2">
+        <div>
+          <dt class="text-xs text-base-sub">Nombre completo</dt>
+          <dd class="text-sm text-base-fg">{{ nombre_completo }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-base-sub">Correo</dt>
+          <dd class="text-sm text-base-fg break-words">{{ email|default:'—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-base-sub">Cédula</dt>
+          <dd class="text-sm text-base-fg">{{ perfil.cedula|default:'—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-base-sub">Teléfono</dt>
+          <dd class="text-sm text-base-fg">{{ perfil.telefono|default:'—' }}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <div class="flex flex-wrap gap-3">
+      <a href="{% url 'pedidos:carrito_ver' %}" class="inline-flex items-center justify-center rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-slate-900 hover:bg-accent-600">
+        <i class="fas fa-shopping-cart mr-2"></i> Ver mi carrito
+      </a>
+      <a href="{% url 'catalogo:productos_lista' %}" class="inline-flex items-center justify-center rounded-xl border border-base-border px-5 py-3 text-sm font-medium text-base-fg hover:border-brand hover:text-brand">
+        <i class="fas fa-store mr-2"></i> Seguir comprando
+      </a>
+    </div>
+  </div>
+  
+</div>
+{% endblock %}
+

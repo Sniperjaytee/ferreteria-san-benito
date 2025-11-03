@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Acceso requerido{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+  <div class="mx-auto max-w-xl rounded-2xl border border-base-border bg-white p-8 text-center shadow">
+    <div class="mb-4 flex justify-center">
+      <span class="inline-flex h-14 w-14 items-center justify-center rounded-full bg-brand text-white">
+        <i class="fas fa-lock text-xl"></i>
+      </span>
+    </div>
+    <h1 class="mb-2 text-2xl font-semibold text-base-fg">Necesitas una cuenta para continuar</h1>
+    <p class="mb-6 text-sm text-base-sub">Para finalizar tu compra y guardar tus pedidos, por favor regístrate o inicia sesión.</p>
+    <div class="flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <a href="{% url 'core:registro' %}{% if next %}?next={{ next|urlencode }}{% endif %}"
+         class="inline-flex w-full items-center justify-center rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white shadow hover:bg-brand-700 sm:w-auto">
+        <i class="fas fa-user-plus mr-2"></i> Registrarse
+      </a>
+      <a href="{% url 'login' %}{% if next %}?next={{ next|urlencode }}{% endif %}"
+         class="inline-flex w-full items-center justify-center rounded-xl border border-base-border px-5 py-3 text-sm font-medium text-base-fg hover:border-brand hover:text-brand sm:w-auto">
+        <i class="fas fa-sign-in-alt mr-2"></i> Iniciar sesión
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

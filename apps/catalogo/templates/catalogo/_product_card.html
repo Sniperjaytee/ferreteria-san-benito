@@ -1,5 +1,5 @@
-﻿{% load static precios %}
-<article class='group rounded-2xl border border-base-border bg-base-surface shadow-card transition hover:-translate-y-1 hover:shadow-md'>
+{% load static precios %}
+<article class='group overflow-hidden h-full rounded-2xl border border-base-border bg-base-surface shadow-card transition hover:-translate-y-1 hover:shadow-md'>
   <a href="{% url 'catalogo:producto_detalle' slug=producto.slug %}" class='block p-3'>
     <div class='rounded-2xl border-2 border-dashed border-base-border bg-white'>
       {% if producto.imagen %}
@@ -13,7 +13,7 @@
     </div>
   </a>
 
-  <div class='space-y-3 px-4 pb-5'>
+  <div class='space-y-3 px-4 pb-5 flex flex-col h-full'>
     <h3 class='line-clamp-2 text-sm font-semibold text-base-fg transition group-hover:text-brand'>
       <a href="{% url 'catalogo:producto_detalle' slug=producto.slug %}">{{ producto.nombre }}</a>
     </h3>
@@ -35,10 +35,10 @@
       <p class='text-xs font-medium text-danger'>Stock bajo</p>
     {% endif %}
 
-    <form action="{% url 'pedidos:carrito_agregar' %}" method='post' class='flex items-center justify-between gap-2'>
+    <form action="{% url 'pedidos:carrito_agregar' %}" method='post' class='mt-auto flex flex-wrap items-center gap-2 sm:flex-nowrap sm:justify-between'>
       {% csrf_token %}
       <input type='hidden' name='product_id' value='{{ producto.id }}' />
-      <div class='inline-flex items-center rounded-full border border-base-border'>
+      <div class='inline-flex w-full items-center justify-between rounded-full border border-base-border sm:w-auto sm:justify-center'>
         <button type='button'
                 class='px-3 py-1 text-base-sub hover:text-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/50'
                 onclick="var q=this.nextElementSibling; if(+q.value>1){q.value=+q.value-1;}">-</button>
@@ -49,10 +49,11 @@
                 onclick="var q=this.previousElementSibling; q.value=+q.value+1;">+</button>
       </div>
       <button type='submit'
-              class='inline-flex items-center justify-center rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/70'>
+              class='inline-flex w-full items-center justify-center rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/70 sm:w-auto'>
         <i class='fas fa-shopping-cart mr-2 text-xs'></i>
         Añadir
       </button>
     </form>
   </div>
 </article>
+

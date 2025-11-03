@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from .models import Categoria, Producto
+from .models import Categoria, Producto, Comentario
 
 # Register your models here.
 
@@ -164,3 +164,11 @@ class ProductoAdmin(admin.ModelAdmin):
         updated = queryset.update(activo=False)
         self.message_user(request, f'{updated} productos desactivados.')
     desactivar_productos.short_description = "Desactivar productos seleccionados"
+
+
+@admin.register(Comentario)
+class ComentarioAdmin(admin.ModelAdmin):
+    list_display = ("producto", "nombre", "usuario", "created_at", "activo")
+    list_filter = ("activo", "created_at")
+    search_fields = ("producto__nombre", "nombre", "contenido")
+    list_editable = ("activo",)
