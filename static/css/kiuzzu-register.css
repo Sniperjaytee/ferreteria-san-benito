@@ -96,19 +96,27 @@
 }
 
 .auth-page .validation-message {
-  position: absolute;
-  bottom: -1.5rem;
+  display: block;
+  position: static;
+  margin-top: 0.5rem;
   left: 0;
-  font-size: 0.75rem;
+  font-size: 0.875rem; /* ligeramente más grande */
+  color: #ef4444;
   opacity: 0;
-  transform: translateY(5px);
-  transition: 0.3s;
+  transform: translateY(6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-.auth-page .input-field.invalid ~ .validation-message {
+/* estado visible: aparece, se mantiene y luego se desvanece (controlado por JS) */
+.auth-page .validation-message.show {
   opacity: 1;
   transform: translateY(0);
-  color: #ef4444;
+  animation: validation-fadeout 1s ease forwards 5s; /* la animación comienza tras 5s */
+}
+
+@keyframes validation-fadeout {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-8px); }
 }
 
 .auth-page .input-highlight {

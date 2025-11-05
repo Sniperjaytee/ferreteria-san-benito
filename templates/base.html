@@ -13,6 +13,30 @@
   {% tailwind_css %}
   <style>
     html, body { overflow-x: hidden; margin: 0; padding: 0; }
+    /* Site-level messages (top-left single-line notices) */
+    .site-messages { position: relative; }
+    .site-message {
+      max-width: 100%;
+      display: block;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity .25s ease, transform .25s ease;
+      border-left: 4px solid #f87171; /* subtle accent for errors */
+      background: #fff;
+      font-size: 1.05rem; /* un poco más grande */
+      font-weight: 500;
+      line-height: 1.2;
+      padding: 0.5rem 1rem;
+    }
+    .site-message.show {
+      opacity: 1;
+      transform: translateY(0);
+      animation: site-msg-fadeout 1s ease forwards 5s; /* start fadeout after 5s */
+    }
+    @keyframes site-msg-fadeout {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-10px); }
+    }
   </style>
 </head>
 <body class="min-h-screen bg-base-surface font-sans text-base text-base-fg overflow-x-hidden">
@@ -54,7 +78,7 @@
               </form>
             </div>
 
-            <div class="order-2 flex flex-row gap-2 items-center flex-none isolate">
+            <div class="order-2 flex flex-row gap-2 flex-none isolate">
               <form action="{% url 'core:set_moneda' %}" method="get" class="w-auto relative z-40">
                 <label for="currency-select" class="sr-only">Moneda</label>
     <select id="currency-select" name="m"
@@ -99,9 +123,9 @@
 
     <div class="container mx-auto px-4 {% if messages %}py-4{% else %}py-0{% endif %}">
       {% if messages %}
-        <div class="space-y-2">
+        <div class="site-messages space-y-2">
           {% for message in messages %}
-            <div class="rounded-xl border border-base-border bg-white px-4 py-2 text-sm text-base-fg shadow-sm">{{ message }}</div>
+            <div class="site-message rounded-xl border border-base-border bg-white px-4 py-2 text-sm text-base-fg shadow-sm">{{ message }}</div>
           {% endfor %}
         </div>
       {% endif %}
@@ -148,7 +172,69 @@
     </footer>
   </div>
 
-  {% block scripts %}{% endblock %}
+  {% block scripts %}
+  <script>
+    (function(){
+      // translations for common English messages -> Spanish
+      var translations = {
+        "The two password fields didn't match.": "Las dos contraseñas no coinciden.",
+        "This password is too short. It must contain at least 8 characters.": "La contraseña es demasiado corta. Debe contener al menos 8 caracteres.",
+        "This password is too common.": "Esta contraseña es demasiado común.",
+        "This password is entirely numeric.": "Esta contraseña es totalmente numérica.",
+        "Enter a valid email address.": "Introduce una dirección de correo electrónico válida.",
+        "This field is required.": "Este campo es obligatorio.",
+        "Ensure this value has at most": "Asegúrate de que este valor tenga como máximo",
+        "Ensure this value has at least": "Asegúrate de que este valor tenga al menos",
+        "The password is too similar to the email address.": "La contraseña es demasiado similar al correo electrónico.",
+        "The password is too similar to the username.": "La contraseña es demasiado similar al nombre de usuario.",
+        "The password is too similar to the first name.": "La contraseña es demasiado similar al nombre.",
+        "The password is too similar to the last name.": "La contraseña es demasiado similar al apellido.",
+        "The password is too similar to the": "La contraseña es demasiado similar a "
+      };
+      // common Django auth non-field error (login) exact phrase
+      translations["Please enter a correct username and password. Note that both fields may be case-sensitive."] = "Por favor, introduce un nombre de usuario y una contraseña correctos. Ten en cuenta que ambos campos distinguen entre mayúsculas y minúsculas.";
+
+      // Normalize text by inserting spaces between sentences that might have been concatenated
+      function normalizeSpacing(s){
+        if(!s) return s;
+        // insert a space after a period if it's directly followed by a letter (no space)
+        return s.replace(/\.([A-Za-zÀ-ÖØ-öø-ÿÑñ])/g, '. $1');
+      }
+
+      function translateText(t){
+        if(!t) return t;
+        var out = t;
+        Object.keys(translations).forEach(function(k){
+          if(out.indexOf(k)!==-1){
+            out = out.replace(k, translations[k]);
+          }
+        });
+        return out;
+      }
+
+      function animateSiteMessages(){
+        document.querySelectorAll('.site-message').forEach(function(el){
+          // translate
+          var text = el.textContent || '';
+          var tr = translateText(text.trim());
+          if(tr && tr!==text){ el.textContent = tr; }
+          if(text && text.trim().length>0){
+            el.classList.add('show');
+            // remove from DOM after animation (5s delay + 1s fade)
+            setTimeout(function(){ try{ el.classList.remove('show'); } catch(e){} }, 6000);
+          }
+        });
+      }
+
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', animateSiteMessages);
+      } else {
+        animateSiteMessages();
+      }
+    })();
+  </script>
+  {{ block.super }}
+  {% endblock %}
 </body>
 </html>
 <!-- NEW_BASE_MARKER -->
