@@ -52,6 +52,7 @@ class TasaCambio(models.Model):
         ('USD', 'Dólar Americano (USD)'),
         ('VES', 'Bolívar Venezolano (VES)'),
         ('COP', 'Peso Colombiano (COP)'),
+        ('EUR', 'Euro (EUR)'),
     ]
     
     moneda_origen = models.CharField(
@@ -141,6 +142,7 @@ class ConfiguracionMoneda(models.Model):
         ('USD', 'Dólar Americano (USD)'),
         ('VES', 'Bolívar Venezolano (VES)'),
         ('COP', 'Peso Colombiano (COP)'),
+        ('EUR', 'Euro (EUR)'),
     ]
     
     moneda_principal = models.CharField(
@@ -180,12 +182,13 @@ class ConfiguracionMoneda(models.Model):
             defaults={
                 'moneda_principal': cls.MONEDA_BASE,
                 'mostrar_multiple_monedas': True,
-                'monedas_mostrar': ['USD', 'VES', 'COP'],
+                'monedas_mostrar': ['USD', 'VES', 'COP', 'EUR'],
                 'decimales_precision': 2,
                 'simbolos_monedas': {
                     'USD': '$',
                     'VES': 'Bs',
-                    'COP': '$'
+                    'COP': '$',
+                    'EUR': '€'
                 }
             }
         )
@@ -197,5 +200,6 @@ class ConfiguracionMoneda(models.Model):
         return self.simbolos_monedas or {
             'USD': '$',
             'VES': 'Bs',
-            'COP': '$'
+            'COP': '$',
+            'EUR': '€'
         }

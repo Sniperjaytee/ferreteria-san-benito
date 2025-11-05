@@ -1,0 +1,25 @@
+{% extends "admin/change_list.html" %}
+{% load i18n %}
+
+{% block content %}
+  <div class="tasa-cards">
+    {% for t in tasas_resumen_list %}
+      {% with codigo=t.codigo valor=t.valor %}
+        <a href="./editar-directo/{{ codigo }}/" class="tasa-card">
+          <div class="symbol">
+            {% if codigo == 'VES' %}Bs{% elif codigo == 'COP' %}$ {% elif codigo == 'EUR' %}€ {% else %}{{ codigo }}{% endif %}
+          </div>
+          <div class="value">
+            {% if valor %}
+              1 USD = {{ valor }} {{ codigo }}
+            {% else %}
+              <span class="not-configured">Sin configurar aún</span>
+            {% endif %}
+          </div>
+        </a>
+      {% endwith %}
+    {% endfor %}
+  </div>
+
+  {{ block.super }}
+{% endblock %}

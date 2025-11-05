@@ -89,8 +89,167 @@ class TasaCambioAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+    # Usar plantilla personalizada para mostrar las 3 tarjetas de monedas
+    change_list_template = 'admin/core/tasa_cambio/change_list.html'
+    # Añadir CSS/JS personalizados
+    class Media:
+        css = {
+            'all': ('css/admin-tasas.css',)
+        }
     
     actions = ['activar_tasas', 'desactivar_tasas', 'crear_tasas_bidireccionales']
+
+    def changelist_view(self, request, extra_context=None):
+        """Inyecta en el contexto las tasas relativas al USD para mostrar las 3 tarjetas."""
+        extra_context = extra_context or {}
+        monedas = ['VES', 'COP', 'EUR']
+        tasas = {}
+        tasas_list = []
+        for m in monedas:
+            tasa_obj = TasaCambio.objects.filter(moneda_origen='USD', moneda_destino=m, activa=True).first()
+            if tasa_obj:
+                tasas[m] = {
+                    'valor': tasa_obj.tasa,
+                    'obj': tasa_obj
+                }
+                tasas_list.append({'codigo': m, 'valor': tasa_obj.tasa, 'obj': tasa_obj})
+            else:
+                tasas[m] = None
+                tasas_list.append({'codigo': m, 'valor': None, 'obj': None})
+
+        extra_context['tasas_resumen_usd'] = tasas
+        extra_context['tasas_resumen_list'] = tasas_list
+        # símbolos desde la configuración
+        try:
+            config = ConfiguracionMoneda.obtener_configuracion()
+            extra_context['simbolos'] = config.simbolos
+        except Exception:
+            extra_context['simbolos'] = {'USD': '$', 'VES': 'Bs', 'COP': '$', 'EUR': '€'}
+        return super().changelist_view(request, extra_context=extra_context)
+
+    def get_urls(self):
+        from django.urls import path
+        urls = super().get_urls()
+        custom = [
+            path('editar-directo/<str:moneda>/', self.admin_site.admin_view(self.editar_directo_view), name='tasa_editar_directo'),
+        ]
+        return custom + urls
+
+    def editar_directo_view(self, request, moneda=None):
+        """Vista simple para editar la tasa respecto a 1 USD para la moneda indicada."""
+        from django.shortcuts import render, redirect
+        from django.contrib import messages
+
+        moneda = moneda or request.GET.get('moneda')
+        if moneda not in dict(TasaCambio.MONEDAS).keys():
+            messages.error(request, 'Moneda no válida')
+            from django.urls import reverse
+            return redirect(reverse('admin:core_tasacambio_changelist'))
+
+        # Buscar tasa USD -> moneda
+        tasa = TasaCambio.objects.filter(moneda_origen='USD', moneda_destino=moneda).first()
+
+        if request.method == 'POST':
+            valor = request.POST.get('valor')
+            try:
+                from decimal import Decimal
+                v = Decimal(valor)
+                if v <= 0:
+                    raise ValueError()
+            except Exception:
+                messages.error(request, 'Valor inválido. Debe ser un número mayor que cero.')
+                return redirect(request.path)
+
+            # Crear o actualizar tasa USD -> moneda
+            tasa_obj, created = TasaCambio.objects.update_or_create(
+                moneda_origen='USD',
+                moneda_destino=moneda,
+                defaults={
+                    'tasa': v,
+                    'activa': True,
+                    'actualizada_por': request.user,
+                }
+            )
+
+            # Asegurar tasa inversa también existe (recíproca)
+            try:
+                if v != 0:
+                    tasa_inv_val = (Decimal('1.0') / v).quantize(Decimal('0.000001'))
+                else:
+                    tasa_inv_val = None
+            except Exception:
+                tasa_inv_val = None
+
+            if tasa_inv_val:
+                TasaCambio.objects.update_or_create(
+                    moneda_origen=moneda,
+                    moneda_destino='USD',
+                    defaults={
+                        'tasa': tasa_inv_val,
+                        'activa': True,
+                        'actualizada_por': request.user,
+                    }
+                )
+
+            messages.success(request, f'Tasa USD→{moneda} guardada: 1 USD = {v} {moneda}')
+            from django.urls import reverse
+            return redirect(reverse('admin:core_tasacambio_changelist'))
+
+        simbolo = moneda
+        try:
+            config = ConfiguracionMoneda.obtener_configuracion()
+            simbolo = config.simbolos.get(moneda, moneda)
+        except Exception:
+            pass
+
+        return render(request, 'admin/core/tasa_cambio/edit_direct.html', {
+            'moneda': moneda,
+            'tasa': tasa,
+            'simbolo': simbolo,
+        })
+
+    def save_model(self, request, obj, form, change):
+        """Asegura que se actualice actualizada_por y que exista la tasa USD<->otra moneda."""
+        # actualizar quien modificó
+        obj.actualizada_por = request.user
+        super().save_model(request, obj, form, change)
+
+        # Si se guardó una tasa que involucra USD, asegurar la tasa recíproca exista
+        try:
+            from decimal import Decimal, getcontext
+            getcontext().prec = 12
+            if obj.moneda_origen == 'USD' and obj.moneda_destino != 'USD':
+                # crear/actualizar inversa
+                if obj.tasa and obj.tasa != Decimal('0'):
+                    inv = (Decimal('1') / obj.tasa).quantize(Decimal('0.000001'))
+                    TasaCambio.objects.update_or_create(
+                        moneda_origen=obj.moneda_destino,
+                        moneda_destino='USD',
+                        defaults={'tasa': inv, 'activa': obj.activa, 'actualizada_por': request.user}
+                    )
+            elif obj.moneda_destino == 'USD' and obj.moneda_origen != 'USD':
+                # crear/actualizar USD->origen
+                if obj.tasa and obj.tasa != Decimal('0'):
+                    inv = (Decimal('1') / obj.tasa).quantize(Decimal('0.000001'))
+                    TasaCambio.objects.update_or_create(
+                        moneda_origen='USD',
+                        moneda_destino=obj.moneda_origen,
+                        defaults={'tasa': inv, 'activa': obj.activa, 'actualizada_por': request.user}
+                    )
+        except Exception:
+            # No bloquear en caso de error al crear inversa
+            pass
+
+    def get_changeform_initial_data(self, request):
+        """Prefill add form using GET params moneda_origen and moneda_destino (used when clicking tarjetas)."""
+        initial = super().get_changeform_initial_data(request) or {}
+        moneda_origen = request.GET.get('moneda_origen')
+        moneda_destino = request.GET.get('moneda_destino')
+        if moneda_origen:
+            initial['moneda_origen'] = moneda_origen
+        if moneda_destino:
+            initial['moneda_destino'] = moneda_destino
+        return initial
     
     def tasa_formateada(self, obj):
         """Muestra la tasa formateada con colores"""

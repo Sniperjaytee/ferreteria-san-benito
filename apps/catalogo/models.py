@@ -73,6 +73,7 @@ class Producto(models.Model):
         ('USD', 'Dólar Americano (USD)'),
         ('VES', 'Bolívar Venezolano (VES)'),
         ('COP', 'Peso Colombiano (COP)'),
+        ('EUR', 'Euro (EUR)'),
     ]
     
     nombre = models.CharField(

@@ -48,12 +48,23 @@ def cart(request) -> Dict[str, int]:
         or _detect_asset('img/favicon.ico')
     )
 
+    monedas = config.monedas_mostrar or [config.moneda_principal]
+    # Ensure EUR is available in the UI if code was recently added but config predates it
+    if 'EUR' not in monedas:
+        monedas = monedas + ['EUR']
+
+    simbolos_map = config.simbolos or {}
+    # Ensure EUR symbol exists in the map for older configs
+    if 'EUR' not in simbolos_map:
+        simbolos_map = dict(simbolos_map)
+        simbolos_map['EUR'] = '€'
+
     return {
         'cart_count': count,
         'moneda_actual': moneda_actual,
         'simbolo_moneda': simbolo,
-        'monedas_disponibles': config.monedas_mostrar or [config.moneda_principal],
-        'simbolos_map': config.simbolos,
+        'monedas_disponibles': monedas,
+        'simbolos_map': simbolos_map,
         'categorias_nav': list(Categoria.objects.filter(activa=True).order_by('orden')[:8]),
         'logo_path': logo_path,
         'favicon_path': favicon_path,

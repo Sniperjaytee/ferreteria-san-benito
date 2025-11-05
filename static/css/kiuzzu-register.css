@@ -47,7 +47,7 @@
   width: 100%;
   padding: 1rem 1rem 0.5rem 1rem;
   border: 0;
-  border-bottom: 2px solid #cbd5e1;
+  border-bottom: 3px solid #cbd5e1;
   background-color: transparent;
   outline: none;
   transition: 0.3s;
@@ -55,11 +55,11 @@
 }
 
 .auth-page .input-field.valid {
-  border-bottom: 2px solid #10b981;
+  border-bottom: 3px solid #10b981;
 }
 
 .auth-page .input-field.invalid {
-  border-bottom: 2px solid #ef4444;
+  border-bottom: 3px solid #ef4444;
 }
 
 .auth-page .input-label {
@@ -120,6 +120,7 @@
 }
 
 .auth-page .input-highlight {
+  /* keep the element in the DOM for markup parity but hide the animated bar */
   position: absolute;
   bottom: 0;
   left: 0;
@@ -127,10 +128,21 @@
   width: 0;
   background-color: #0d3b66;
   transition: 0.4s;
+  display: none !important;
 }
 
+/* Ensure focus does not rely on the animated bar; change bottom border color on focus */
 .auth-page .input-field:focus ~ .input-highlight {
-  width: 100%;
+  width: 0 !important;
+}
+
+.auth-page .input-field:focus {
+  /* override global tailwind focus ring and border-color */
+  --tw-ring-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  border-color: transparent !important; /* clear any global border-color */
+  border-bottom: 3px solid #0d3b66 !important;
 }
 
 .auth-page .btn-register {

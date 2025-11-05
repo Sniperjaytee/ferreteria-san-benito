@@ -112,7 +112,12 @@ def set_moneda(request):
     except Exception:
         config = None
     moneda = request.GET.get('m') or request.POST.get('m')
-    if config and moneda and moneda in (config.monedas_mostrar or [config.moneda_principal]):
+    # Accept configured monedas or include EUR as fallback for older configs
+    monedas_permitidas = (config.monedas_mostrar or [config.moneda_principal])
+    if 'EUR' not in monedas_permitidas:
+        monedas_permitidas = monedas_permitidas + ['EUR']
+
+    if config and moneda and moneda in monedas_permitidas:
         request.session['moneda'] = moneda
         request.session.modified = True
     return redirect(request.META.get('HTTP_REFERER', 'core:index'))
