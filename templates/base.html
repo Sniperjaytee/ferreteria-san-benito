@@ -100,7 +100,13 @@
       {% if messages %}
         <div class="space-y-2">
           {% for message in messages %}
-            <div class="rounded-xl border border-base-border bg-white px-4 py-2 text-sm text-base-fg shadow-sm">{{ message }}</div>
+            {% if 'error' in message.tags or 'warning' in message.tags %}
+              <div class="rounded-xl border border-danger/30 bg-danger/5 p-3 text-danger shadow-sm">
+                <div class="pl-3 border-l-4 border-danger">{{ message }}</div>
+              </div>
+            {% else %}
+              <div class="rounded-xl border border-base-border bg-white px-4 py-2 text-sm text-base-fg shadow-sm">{{ message }}</div>
+            {% endif %}
           {% endfor %}
         </div>
       {% endif %}

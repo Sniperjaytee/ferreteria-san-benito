@@ -35,7 +35,7 @@
       <p class='text-xs font-medium text-danger'>Stock bajo</p>
     {% endif %}
 
-    <form action="{% url 'pedidos:carrito_agregar' %}" method='post' class='mt-auto flex flex-wrap items-center gap-2 sm:flex-nowrap sm:justify-between'>
+    <form action="{% url 'pedidos:carrito_agregar' %}" method='post' class='mt-auto flex flex-col items-center gap-2 sm:flex-nowrap sm:justify-between'>
       {% csrf_token %}
       <input type='hidden' name='product_id' value='{{ producto.id }}' />
       <div class='inline-flex w-full items-center justify-between rounded-full border border-base-border sm:w-auto sm:justify-center'>
@@ -43,13 +43,13 @@
                 class='px-3 py-1 text-base-sub hover:text-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/50'
                 onclick="var q=this.nextElementSibling; if(+q.value>1){q.value=+q.value-1;}">-</button>
    <input type='number' name='quantity' min='1' value='1'
-     class='h-9 w-20 border-0 text-center text-sm text-base-fg focus:outline-none focus:ring-0' />
+     class='h-9 w-13 border-0 text-center text-sm text-base-fg focus:outline-none focus:ring-0' />
         <button type='button'
                 class='px-3 py-1 text-base-sub hover:text-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/50'
                 onclick="var q=this.previousElementSibling; q.value=+q.value+1;">+</button>
       </div>
       <button type='submit'
-              class='inline-flex w-full items-center justify-center rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/70 sm:w-auto'>
+              class='w-full items-center justify-center rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/70 '>
         <i class='fas fa-shopping-cart mr-2 text-xs'></i>
         Añadir
       </button>

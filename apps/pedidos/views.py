@@ -97,17 +97,42 @@ def carrito_actualizar(request):
     quantity = request.POST.get('quantity', '1')
     cart = _get_cart(request.session)
     if product_id in cart:
+        try:
+            producto = Producto.objects.get(id=int(product_id), activo=True)
+        except Producto.DoesNotExist:
+            # Producto no válido: eliminar del carrito si existe
+            cart.pop(product_id, None)
+            request.session.modified = True
+            messages.error(request, 'Producto no encontrado.')
+            return redirect('pedidos:carrito_ver')
+
         qty = max(0, int(quantity))
+        # Si qty es 0, eliminar
         if qty == 0:
             cart.pop(product_id, None)
             if request.user.is_authenticated:
                 Carrito.objects.filter(usuario=request.user, producto_id=int(product_id)).delete()
-        else:
-            cart[product_id] = qty
+            request.session.modified = True
+            return redirect('pedidos:carrito_ver')
+
+        # Validar stock disponible
+        if producto.stock is not None and qty > producto.stock:
+            # Ajustar al stock disponible
+            cart[product_id] = producto.stock
+            request.session.modified = True
             if request.user.is_authenticated:
                 Carrito.objects.update_or_create(
-                    usuario=request.user, producto_id=int(product_id), defaults={'cantidad': qty}
+                    usuario=request.user, producto=producto, defaults={'cantidad': producto.stock}
                 )
+            messages.warning(request, f'Solo hay {producto.stock} unidades disponibles de {producto.nombre}. Se ajustó la cantidad en tu carrito.')
+            return redirect('pedidos:carrito_ver')
+
+        # Cantidad válida
+        cart[product_id] = qty
+        if request.user.is_authenticated:
+            Carrito.objects.update_or_create(
+                usuario=request.user, producto_id=int(product_id), defaults={'cantidad': qty}
+            )
         request.session.modified = True
     return redirect('pedidos:carrito_ver')
 
