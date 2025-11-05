@@ -1,11 +1,9 @@
 ﻿@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
-.auth-page {
+
+/* Scoped for login page: no full-page blue background */
+.auth-page {
   font-family: "Poppins", sans-serif;
-  background: linear-gradient(135deg, #0d3b66 0%, #1d5a9b 100%);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  /* Fondo y altura heredan del sitio (como registro) */
   padding: 20px;
 }
 .auth-page .form-container {
